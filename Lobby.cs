@@ -10,7 +10,7 @@ namespace RaidStrategy
     {
         public void MainLobby()
         {
-            LobbyOrder();
+            InputOrder();
         }
 
         // 다른 곳에서 로비 진입은 이 메서드를 통해서 합니다.
@@ -49,17 +49,12 @@ namespace RaidStrategy
                " =@@-          @@%. "
             };
 
-            for (int i = 0; i < characterArt.Length; i++)
-            {
-                int Cursor_X = (GameManager.BUFFER_SIZE_WIDTH - characterArt[0].Length) / 2;
-                int Cursor_Y = (GameManager.HORIZON_AREA - characterArt.Length) / 2;
+            GameManager.DrawCenterVisualPanel(characterArt);
 
-                Console.SetCursorPosition(Cursor_X, Cursor_Y + i);
-                Console.Write(characterArt[i]);
-            }
+            
         }
 
-        private void LobbyOrder()
+        private void InputOrder()
         {
             string[] orderList = {
                 "1. 전투 시작하기    ",
@@ -68,14 +63,7 @@ namespace RaidStrategy
                 "4. 종료하기         "
             };
 
-            for (int i = 0; i < orderList.Length; i++)
-            {
-                int Cursor_X = (GameManager.BUFFER_SIZE_WIDTH - orderList[0].Length) / 2;
-                int Cursor_Y = (GameManager.HORIZON_AREA - orderList.Length) / 2;
-
-                Console.SetCursorPosition(Cursor_X, Cursor_Y + i);
-                Console.Write(orderList[i]);
-            }
+            GameManager.DrawCenterCommandPanel(orderList);
         }
     }
 }

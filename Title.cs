@@ -110,8 +110,8 @@ namespace RaidStrategy
 
             GameManager.ClearCommandPanel();
 
-            Console.SetCursorPosition((Program.BUFFER_SIZE_WIDTH / 2) - 20,
-                                     ((Program.BUFFER_SIZE_HEIGHT - Program.HORIZON_AREA) / 2) + Program.HORIZON_AREA);
+            Console.SetCursorPosition((GameManager.BUFFER_SIZE_WIDTH / 2) - 20,
+                                     ((GameManager.BUFFER_SIZE_HEIGHT - GameManager.HORIZON_AREA) / 2) + GameManager.HORIZON_AREA);
 
             Console.Write("게임을 시작하려면 아무 키나 눌러주세요.");
         }
