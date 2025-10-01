@@ -20,6 +20,7 @@ namespace RaidStrategy
             Player player = new Player(playerName, playerAffillation);
 
             Console.CursorVisible = false;
+
             Lobby lobby = new Lobby();
             lobby.EnterLobby();
 

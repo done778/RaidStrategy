@@ -8,6 +8,8 @@ namespace RaidStrategy
         public const int BUFFER_SIZE_WIDTH = 240;
         public const int BUFFER_SIZE_HEIGHT = 60;
         public const int HORIZON_AREA = 40;
+        public const int INVENTORY_CAPACITY = 8;
+        public const int DECK_CAPACITY = 4;
 
         // 비주얼 패널에 매개변수로 받은 문자열 배열을 중앙에 그립니다.
         public static void DrawCenterVisualPanel(string[] drawResource)

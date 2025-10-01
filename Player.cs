@@ -18,5 +18,13 @@ namespace RaidStrategy
             inventory = new Inventory();
             deck = new MyDeck();
         }
+        public void OpenInventory()
+        {
+            inventory.EnterInventory();
+        }
+        public void OpenMyDeck()
+        {
+            deck.EnterMyDeck();
+        }
     }
 }

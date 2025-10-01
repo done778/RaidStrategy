@@ -66,9 +66,7 @@ namespace RaidStrategy
                " =@@-          @@%. "
             };
 
-            GameManager.DrawCenterVisualPanel(characterArt);
-
-            
+            GameManager.DrawCenterVisualPanel(characterArt);  
         }
 
         private OrderType InputOrder()

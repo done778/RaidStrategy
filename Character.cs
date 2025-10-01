@@ -47,19 +47,22 @@ namespace RaidStrategy
         public Enemy(string name, int att, int hp) : base(name, att, hp) { }
     }
 
-    // 아군 클래스가 공통적으로 가질 요소는 아직 확정되지 않았지만 혹시 몰라 만들어뒀다.
+    // 아군 클래스가 공통적으로 가질 요소는 편성 여부
     class Ally : Character
     {
+        public bool IsDecking { get; set; }  
         public Ally(string name, int att, int hp) : base(name, att, hp) { }
     }
 
     // 8종류의 각 캐릭터들은 처음 생성시 고정된 이름과 스탯을 가진다.
     class SwordMan : Ally
     {
+        // 기본 스탯이 높은 탱커
         public SwordMan() : base("검사", 5, 12) { }
     }
     class Fighter : Ally
     {
+        // 기본 스탯이 높은 딜러
         public Fighter() : base("싸움꾼", 10, 8) { }
 
     }
@@ -69,7 +72,7 @@ namespace RaidStrategy
 
         public void UniqueAbility()
         {
-            // 아직 구상 중
+            // 피해를 받으면 공격력이 현재 수치의 2배가 됨.
         }
     }
     class Archer : Ally, ISpecialAbility
@@ -78,7 +81,7 @@ namespace RaidStrategy
 
         public void UniqueAbility()
         {
-            // 아직 구상 중
+            // 맨 앞에 있지 않으면 지원 공격을 함.
         }
     }
     class Boxer : Ally, ISpecialAbility
@@ -87,16 +90,19 @@ namespace RaidStrategy
 
         public void UniqueAbility()
         {
-            // 아직 구상 중
+            // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
+            // 특수 능력 트리거로서 활용
         }
     }
     class Magician : Ally, ISpecialAbility
     {
-        public Magician() : base("마법사", 8, 5) { }
+        public Magician() : base("마법사", 12, 2) { }
 
         public void UniqueAbility()
         {
-            // 아직 구상 중
+            // 적을 쓰러뜨리면 현재 공격력이 3배가 됨.
+            // 엄청난 공격력 뻥튀기, 낮은 체력.
+            // 후반에 뻥튀기된 공격력으로 적에게 원기옥 모아서 원킬을 노리는 역할
         }
     }
     class Scholar : Ally, ISpecialAbility
@@ -105,7 +111,7 @@ namespace RaidStrategy
 
         public void UniqueAbility()
         {
-            // 아직 구상 중
+            // 매 턴 맨 앞에 위치한 아군의 체력 +2
         }
     }
     class Oracle : Ally, ISpecialAbility
@@ -114,7 +120,7 @@ namespace RaidStrategy
 
         public void UniqueAbility()
         {
-            // 아직 구상 중
+            // 아군이 쓰러지면
         }
     }
 }
