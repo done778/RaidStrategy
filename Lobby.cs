@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RaidStrategy
 {
@@ -77,10 +74,12 @@ namespace RaidStrategy
         private OrderType InputOrder()
         {
             string[] orderList = {
-                "1. 전투 시작하기    ",
-                "2. 내 덱 조회 / 변경",
-                "3. 인벤토리 조회    ",
-                "4. 종료하기         "
+                "     -----------------------------",
+                "    /   1. 전투 시작하기        / ",
+                "   /    2. 내 덱 조회 / 변경   /  ",
+                "  /     3. 인벤토리 조회      /   ",
+                " /      4. 종료하기          /    ",
+                "----------------------------      "
             };
 
             GameManager.DrawCenterCommandPanel(orderList);
