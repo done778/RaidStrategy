@@ -10,7 +10,7 @@ namespace RaidStrategy
     {
         public void MainLobby()
         {
-            
+            LobbyOrder();
         }
 
         // 다른 곳에서 로비 진입은 이 메서드를 통해서 합니다.
@@ -18,6 +18,7 @@ namespace RaidStrategy
         {
             GameManager.ClearAllPanel();
             DrawLobbyCharacter();
+            MainLobby();
         }
 
         private void DrawLobbyCharacter()
@@ -50,8 +51,8 @@ namespace RaidStrategy
 
             for (int i = 0; i < characterArt.Length; i++)
             {
-                int Cursor_X = (Program.BUFFER_SIZE_WIDTH - characterArt[0].Length) / 2;
-                int Cursor_Y = (Program.HORIZON_AREA - characterArt.Length) / 2;
+                int Cursor_X = (GameManager.BUFFER_SIZE_WIDTH - characterArt[0].Length) / 2;
+                int Cursor_Y = (GameManager.HORIZON_AREA - characterArt.Length) / 2;
 
                 Console.SetCursorPosition(Cursor_X, Cursor_Y + i);
                 Console.Write(characterArt[i]);
@@ -66,6 +67,15 @@ namespace RaidStrategy
                 "3. 인벤토리 조회    ",
                 "4. 종료하기         "
             };
+
+            for (int i = 0; i < orderList.Length; i++)
+            {
+                int Cursor_X = (GameManager.BUFFER_SIZE_WIDTH - orderList[0].Length) / 2;
+                int Cursor_Y = (GameManager.HORIZON_AREA - orderList.Length) / 2;
+
+                Console.SetCursorPosition(Cursor_X, Cursor_Y + i);
+                Console.Write(orderList[i]);
+            }
         }
     }
 }
