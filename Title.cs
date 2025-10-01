@@ -8,9 +8,60 @@ namespace RaidStrategy
 {
     public class Title
     {
+        public void GameStart()
+        {
+            Console.WriteLine("================================================================================================================================================================================================================================================");
+            Console.WriteLine("\n                   위 선이 콘솔 창에 한 줄에 딱 맞게 표시되도록 창 크기를 늘려 주세요.\n                             세로 역시 충분히 늘려주시기 바랍니다.\n                              준비되었다면 엔터 키를 눌러주세요.");
+            Console.ReadLine();
+
+            for (int i = 1; i < Program.BUFFER_SIZE_HEIGHT - 1; i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write("|");
+                Console.SetCursorPosition(Program.BUFFER_SIZE_WIDTH - 1, i);
+                Console.Write("|");
+            }
+            Console.WriteLine("================================================================================================================================================================================================================================================");
+            Console.SetCursorPosition(0, Program.HORIZON_AREA);
+            Console.WriteLine("================================================================================================================================================================================================================================================");
+
+            Console.SetCursorPosition(Program.BUFFER_SIZE_WIDTH / 2 - 45, Program.HORIZON_AREA / 2);
+            Console.WriteLine("화면의 테두리가 잘 나타났다면 엔터를 눌러주세요. 그렇지 않다면 창 크기를 조절해 주세요.");
+
+            Console.ReadLine();
+
+
+            TitleScreen();
+
+            Console.ReadKey(true);
+        }
+
+        public string InputPlayerName()
+        {
+            GameManager.ClearCommandPanel();
+
+            Console.SetCursorPosition((Program.BUFFER_SIZE_WIDTH / 2) - 15,
+                                    ((Program.BUFFER_SIZE_HEIGHT - Program.HORIZON_AREA) / 2) + Program.HORIZON_AREA);
+
+            Console.Write("플레이어 이름을 적어주세요 : ");
+
+            return Console.ReadLine();
+        }
+
+        public string InputPlayerAff()
+        {
+            GameManager.ClearCommandPanel();
+            Console.SetCursorPosition((Program.BUFFER_SIZE_WIDTH / 2) - 15,
+                                    ((Program.BUFFER_SIZE_HEIGHT - Program.HORIZON_AREA) / 2) + Program.HORIZON_AREA);
+
+            Console.Write("플레이어의 소속을 적어주세요 : ");
+
+            return Console.ReadLine();
+        }
+
         public void TitleScreen()
         {
-            string[] TitleArt = {
+            string[] titleArt = {
                 "                                                                                                                                                                                                                  \r\n",
                 "                    -=@+=@++:                                                                                                                                                                                     \r\n",
                 "              ++%@@@@@@@@@@@@@@@-                                                                                                                                                                                 \r\n",
@@ -52,15 +103,19 @@ namespace RaidStrategy
                 "                                                                                                                                                                                                                  \r\n"
             };
 
-            for (int i = 0; i < TitleArt.Length; i++) {
+            for (int i = 0; i < titleArt.Length; i++) {
                 Console.SetCursorPosition(15, i + 1);
-                Console.Write(TitleArt[i]);
+                Console.Write(titleArt[i]);
             }
+
+            GameManager.ClearCommandPanel();
 
             Console.SetCursorPosition((Program.BUFFER_SIZE_WIDTH / 2) - 20,
                                      ((Program.BUFFER_SIZE_HEIGHT - Program.HORIZON_AREA) / 2) + Program.HORIZON_AREA);
 
             Console.Write("게임을 시작하려면 아무 키나 눌러주세요.");
         }
+
+
     }
 }
