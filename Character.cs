@@ -81,7 +81,6 @@ namespace RaidStrategy
             // 아직 구상 중
         }
     }
-
     class Boxer : Ally, ISpecialAbility
     {
         public Boxer() : base("격투가", 7, 7) { }
@@ -100,7 +99,6 @@ namespace RaidStrategy
             // 아직 구상 중
         }
     }
-
     class Scholar : Ally, ISpecialAbility
     {
         public Scholar() : base("학자", 4, 8) { }

@@ -11,10 +11,15 @@ namespace RaidStrategy
         public string Name { get; set; }
         public string Affiliation { get; set; }
 
+        Inventory inventory;
+        MyDeck deck;
+
         public Player(string _name, string _aff) 
         {
             Name = _name;
             Affiliation = _aff;
+            inventory = new Inventory();
+            deck = new MyDeck();
         }
     }
 }
