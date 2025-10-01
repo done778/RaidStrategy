@@ -9,6 +9,7 @@ namespace RaidStrategy
         static void Main(string[] args)
         {
             Console.SetBufferSize(GameManager.BUFFER_SIZE_WIDTH, GameManager.BUFFER_SIZE_HEIGHT);
+            
             Title title = new Title();
             string playerName;
             string playerAffillation;
@@ -19,6 +20,7 @@ namespace RaidStrategy
 
             Player player = new Player(playerName, playerAffillation);
 
+            Console.CursorVisible = false;
             Lobby lobby = new Lobby();
             lobby.EnterLobby();
 

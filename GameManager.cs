@@ -31,7 +31,6 @@ namespace RaidStrategy
             for (int i = 0; i < drawResource.Length; i++)
             {
                 int Cursor_X = (BUFFER_SIZE_WIDTH - drawResource[0].Length) / 2;
-                //int Cursor_Y = HORIZON_AREA + (drawResource.Length / 2);
                 int Cursor_Y = HORIZON_AREA + ((BUFFER_SIZE_HEIGHT - HORIZON_AREA) / 2) - (drawResource.Length / 2);
 
                 Console.SetCursorPosition(Cursor_X, Cursor_Y + i);
@@ -46,7 +45,7 @@ namespace RaidStrategy
             ClearCommandPanel();
         }
 
-        // 비주얼 패널을 싹 지웁니다. (콘솔의 윗부분)
+        // 비주얼 패널을 지웁니다. (콘솔의 윗부분)
         public static void ClearVisualPanel()
         {
             string clearString = "                                                                                                                                                                                                                                              ";
@@ -58,7 +57,7 @@ namespace RaidStrategy
             }
         }
 
-        // 커맨드 패널을 싹 지웁니다. (콘솔의 아랫부분)
+        // 커맨드 패널을 지웁니다. (콘솔의 아랫부분)
         public static void ClearCommandPanel()
         {
             string clearString = "                                                                                                                                                                                                                                              ";
