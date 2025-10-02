@@ -9,32 +9,53 @@ namespace RaidStrategy
     }
     class Lobby
     {
-        public void MainLobby(Player player)
+        public OrderType MainLobby(Player player)
         {
-            OrderType order = InputOrder();
-            
-            switch (order)
+            CommandPanelDraw();
+
+            while (true)
             {
-                case OrderType.Battle:
-                    Console.WriteLine("전투 시작 선택됨");
-                    break;
-                case OrderType.MyDeck:
-                    player.OpenMyDeck();
-                    break;
-                case OrderType.Inventory:
-                    player.OpenInventory();
-                    break;
-                case OrderType.Quit:
-                    return;
+                var inputKey = Console.ReadKey(true);
+
+                switch (inputKey.Key)
+                {
+                    case ConsoleKey.D1:
+                        return OrderType.Battle;
+
+                    case ConsoleKey.D2:
+                        return OrderType.MyDeck;
+
+                    case ConsoleKey.D3:
+                        return OrderType.Inventory;
+
+                    case ConsoleKey.Q:
+                        return OrderType.Quit;
+                }
             }
         }
 
         // 다른 곳에서 로비 진입은 이 메서드를 통해서 합니다.
         public void EnterLobby(Player player)
         {
-            GameManager.ClearAllPanel();
-            DrawLobbyCharacter();
-            MainLobby(player);
+            while (true) {
+                GameManager.ClearAllPanel();
+                DrawLobbyCharacter();
+                OrderType order = MainLobby(player);
+                switch (order)
+                {
+                    case OrderType.Battle:
+                        Console.WriteLine("전투 시작 선택됨");
+                        break;
+                    case OrderType.MyDeck:
+                        player.OpenMyDeck();
+                        break;
+                    case OrderType.Inventory:
+                        player.OpenInventory();
+                        break;
+                    case OrderType.Quit:
+                        return;
+                }
+            }
         }
 
         private void DrawLobbyCharacter()
@@ -68,37 +89,19 @@ namespace RaidStrategy
             GameManager.DrawCenterVisualPanel(characterArt);  
         }
 
-        private OrderType InputOrder()
+        private void CommandPanelDraw()
         {
             string[] orderList = {
-                "     -----------------------------",
-                "    /   1. 전투 시작하기        / ",
-                "   /    2. 내 덱 조회 / 변경   /  ",
-                "  /     3. 인벤토리 조회      /   ",
-                " /      4. 종료하기          /    ",
-                "----------------------------      "
+                "      -----------------------------",
+                "     /   1. 전투 시작하기        / ",
+                "    /    2. 내 덱 조회 / 변경   /  ",
+                "   /     3. 인벤토리 조회      /   ",
+                "  -----------------------------    ",
+                " /       Q. 종료하기         /     ",
+                "----------------------------       "
             };
 
-            GameManager.DrawCenterCommandPanel(orderList);
-
-            while (true) {
-                var inputKey = Console.ReadKey(true);
-
-                switch (inputKey.Key)
-                {
-                    case ConsoleKey.D1:
-                        return OrderType.Battle;
-
-                    case ConsoleKey.D2:
-                        return OrderType.MyDeck;
-
-                    case ConsoleKey.D3:
-                        return OrderType.Inventory;
-
-                    case ConsoleKey.D4:
-                        return OrderType.Quit;
-                }
-            }
+            GameManager.DrawCenterCommandPanel(orderList); 
         }
     }
 }

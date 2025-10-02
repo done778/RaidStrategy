@@ -27,7 +27,14 @@ namespace RaidStrategy
         {
 
         }
-
+        public void AddAlly(Ally character)
+        {
+            if (count < GameManager.INVENTORY_CAPACITY)
+            {
+                inventory[count] = character;
+                count++;
+            }
+        }
         public void InputOrder()
         {
 
