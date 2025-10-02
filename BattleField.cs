@@ -8,7 +8,12 @@ namespace RaidStrategy
 
         public BattleField(Player player)
         {
-            new Level(player.ClearLevel);
+            new Level(player.ClearLevel + 1);
+        }
+
+        public void StartBattle()
+        {
+
         }
     }
 }

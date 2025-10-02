@@ -20,6 +20,12 @@ namespace RaidStrategy
             return InputOrder();
         }
 
+        public void EnterBattleField()
+        {
+            BattleField battleField = new BattleField(player);
+            battleField.StartBattle();
+        }
+
         private EntranceOrder InputOrder()
         {
             CommandPanelDraw();

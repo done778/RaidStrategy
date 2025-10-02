@@ -57,14 +57,25 @@ namespace RaidStrategy
         public void BattlePreparation()
         {
             FieldEntrance entrance = new FieldEntrance(this);
-            deck.OutputVisualPanelMyDeck();
-            EntranceOrder order = entrance.EnterEntrance();
-            if (order == EntranceOrder.Quit)
-            { return; }
-            else
+            while (true)
             {
-
-            }
+                deck.OutputVisualPanelMyDeck();
+                EntranceOrder order = entrance.EnterEntrance();
+                if (order == EntranceOrder.Quit)
+                { return; }
+                else
+                {
+                    if (order == EntranceOrder.Enter)
+                    {
+                        entrance.EnterBattleField();
+                        break;
+                    }
+                    else
+                    {
+                        OpenMyDeck();
+                    }
+                }
+            }  
         }
 
         public void DeckChangeUI()
