@@ -66,6 +66,24 @@ namespace RaidStrategy
                 Console.SetCursorPosition(1, i + 1);
                 Console.Write(draw[i]);
             }
+
+            int cursorY = (GameManager.BUFFER_SIZE_HEIGHT - GameManager.HORIZON_AREA) + 1;
+            for (int i = 0; i < myDeck.Length; i++)
+            {
+                cursorX = (GameManager.BUFFER_SIZE_WIDTH / 4) * (myDeck.Length - i - 1) + 1;
+
+                if (myDeck[i] == null)
+                {
+                    Console.SetCursorPosition(cursorX + (GameManager.BUFFER_SIZE_WIDTH / 8) - 8, cursorY + (GameManager.HORIZON_AREA / 4) - 1);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("편성되지  않음");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    myDeck[i].DrawAsciiArt(cursorX, cursorY);
+                }
+            }
         }
     }
 }

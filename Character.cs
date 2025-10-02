@@ -59,7 +59,7 @@ namespace RaidStrategy
         }
         // 슬롯에 그려질 아스키 아트를 캐릭터마다 가지고 있어야 함
         public abstract void DrawAsciiArt(int startX, int startY);
-        public void Drawing(int startX, int startY, string[] drawAscii)
+        protected void Drawing(int startX, int startY, string[] drawAscii)
         {
             for (int i = 0; i < drawAscii.Length; i++)
             {
@@ -70,7 +70,7 @@ namespace RaidStrategy
         }
 
         // 각 캐릭터 이름, 스탯, 특능, 편성 정보 등을 출력
-        public void DrawInfo(int startX, int startY)
+        protected void DrawInfo(int startX, int startY)
         {
             int cursorX;
             int temp = GameManager.BUFFER_SIZE_WIDTH / 8; //30
