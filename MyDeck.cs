@@ -17,15 +17,11 @@ namespace RaidStrategy
         }
 
         // 로비에서 내 덱 진입 시 실행되는 메서드
-        public void EnterMyDeck()
+        public ChangeSlot EnterMyDeck()
         {
             GameManager.ClearAllPanel();
             OutputVisualPanelMyDeck();
-            ChangeSlot order = InputOrder();
-            if (order == ChangeSlot.Quit) {
-                return;
-            }
-            ChangeSlotCharacter((int)order);
+            return InputOrder();
         }
         public ChangeSlot InputOrder()
         {
@@ -52,10 +48,36 @@ namespace RaidStrategy
                 }
             } 
         }
-
-        private void ChangeSlotCharacter(int index)
+        // 매개변수 index위치에 target 캐릭터를 덱에 삽입
+        public Ally InsertCharacter(Ally target, int index)
         {
-            myDeck[index] = null;
+            Ally previousChar = null;
+            if (myDeck[index] != null)
+            {
+                previousChar = myDeck[index];
+            }
+            myDeck[index] = target;
+            return previousChar;
+        }
+
+        // 매개변수 캐릭터를 찾아 위치를 반환
+        public int SearchIndex(Ally target)
+        {
+            for (int i = 0; i < myDeck.Length; i++) {
+                if (target.Equals(myDeck[i]))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // 덱 안에서 순서만 바꿈
+        public void ChangeSlotCharacter(int changeA, int changeB)
+        {
+            Ally temp = myDeck[changeA];
+            myDeck[changeA] = myDeck[changeB];
+            myDeck[changeB] = temp;
         }
 
         public void OutputVisualPanelMyDeck()
@@ -135,6 +157,23 @@ namespace RaidStrategy
                 "  --------------------------------------     ",
                 " /          Q. 로비로 이동            /      ",
                 "--------------------------------------       "
+            };
+
+            GameManager.DrawCenterCommandPanel(orderList);
+        }
+
+        public void SlotChangeCommandPanelDraw()
+        {
+            string[] orderList = {
+                " --------------------------------------- ",
+                "|    슬롯에 담을 캐릭터를 선택하세요.   |",
+                "|                                       |",
+                "|   |   1   |   2   |   3   |   4   |   |",
+                "|   ---------------------------------   |",
+                "|   |   5   |   6   |   7   |   8   |   |",
+                "|--------------------------------------- ",
+                "|               Q. 취소                 |",
+                "---------------------------------------- "
             };
 
             GameManager.DrawCenterCommandPanel(orderList);

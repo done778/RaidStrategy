@@ -12,6 +12,9 @@ namespace RaidStrategy
         Ally[] inventory;
         int count;
 
+        public int Count 
+        { get { return count; } }
+
         public Inventory() {
             inventory = new Ally[GameManager.INVENTORY_CAPACITY];
             inventory[0] = new SwordMan();
@@ -21,33 +24,18 @@ namespace RaidStrategy
         }
 
         // 로비에서 인벤토리 진입 시 실행되는 메서드
-        public void EnterInventory()
+        public InventoryOrderType EnterInventory()
         {
             GameManager.ClearAllPanel();
             OutputVisualPanelInventory();
-            InventoryOrderType order = InputOrder();
-            switch (order)
-            {
-                case InventoryOrderType.SortAttAscending:
-                    SortInventory();
-                    break;
-                case InventoryOrderType.SortAttDescending:
-                    SortInventory();
-                    break;
-                case InventoryOrderType.SortHpAscending:
-                    SortInventory();
-                    break;
-                case InventoryOrderType.SortHpDescending:
-                    SortInventory();
-                    break;
-                case InventoryOrderType.Quit:
-                    return;
-            }
+            return InputOrder();
         }
-        public void SortInventory()
+        // 인벤토리 정렬
+        public void SortInventory(InventoryOrderType type)
         {
             Console.WriteLine("정렬");
         }
+        // 인벤토리에 캐릭터 추가
         public void AddAlly(Ally character)
         {
             if (count < GameManager.INVENTORY_CAPACITY)
@@ -56,6 +44,7 @@ namespace RaidStrategy
                 count++;
             }
         }
+        // 명령어 입력 받기
         public InventoryOrderType InputOrder()
         {
             CommandPanelDraw();
@@ -81,7 +70,28 @@ namespace RaidStrategy
                 }
             }
         }
-
+        public bool CheckDecking(int index, out Ally character)
+        {
+            character = inventory[index];
+            return inventory[index].IsDecking;
+        }
+        public void IsDeckingChange(Ally target)
+        {
+            for (int i = 0; i < inventory.Length; i++) 
+            { 
+                if (target.Equals(inventory[i]))
+                {
+                    if (inventory[i].IsDecking == true)
+                    {
+                        inventory[i].IsDecking = false;
+                    }
+                    else
+                    {
+                        inventory[i].IsDecking = true;
+                    }
+                }
+            }
+        }
         public void OutputVisualPanelInventory()
         {
             int cursorX = GameManager.BUFFER_SIZE_WIDTH / 4;
