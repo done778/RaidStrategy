@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace RaidStrategy
 {
+    enum ChangeSlot
+    {
+        First, Second, Third, Fourth, Quit
+    }
     class MyDeck
     {
         Ally[] myDeck;
@@ -17,6 +21,41 @@ namespace RaidStrategy
         {
             GameManager.ClearAllPanel();
             OutputVisualPanelMyDeck();
+            ChangeSlot order = InputOrder();
+            if (order == ChangeSlot.Quit) {
+                return;
+            }
+            ChangeSlotCharacter((int)order);
+        }
+        public ChangeSlot InputOrder()
+        {
+            CommandPanelDraw();
+            while (true)
+            {
+                var inputKey = Console.ReadKey(true);
+                switch (inputKey.Key)
+                {
+                    case ConsoleKey.D1:
+                        return ChangeSlot.First;
+
+                    case ConsoleKey.D2:
+                        return ChangeSlot.Second;
+
+                    case ConsoleKey.D3:
+                        return ChangeSlot.Third;
+
+                    case ConsoleKey.D4:
+                        return ChangeSlot.Fourth;
+
+                    case ConsoleKey.Q:
+                        return ChangeSlot.Quit;
+                }
+            } 
+        }
+
+        private void ChangeSlotCharacter(int index)
+        {
+            myDeck[index] = null;
         }
 
         public void OutputVisualPanelMyDeck()
@@ -84,6 +123,21 @@ namespace RaidStrategy
                     myDeck[i].DrawAsciiArt(cursorX, cursorY);
                 }
             }
+        }
+        private void CommandPanelDraw()
+        {
+            string[] orderList = {
+                "       --------------------------------------",
+                "      /                                    / ",
+                "     /    변경 하고자 하는 슬롯 번호를    /  ",
+                "    /            입력해 주세요.          /   ",
+                "   /                                    /    ",
+                "  --------------------------------------     ",
+                " /          Q. 로비로 이동            /      ",
+                "--------------------------------------       "
+            };
+
+            GameManager.DrawCenterCommandPanel(orderList);
         }
     }
 }

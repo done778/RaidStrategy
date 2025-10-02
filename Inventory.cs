@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace RaidStrategy
 {
+    enum InventoryOrderType
+    {
+        SortAttAscending, SortAttDescending, SortHpAscending, SortHpDescending, Quit
+    }
     class Inventory
     {
         Ally[] inventory;
@@ -21,11 +25,28 @@ namespace RaidStrategy
         {
             GameManager.ClearAllPanel();
             OutputVisualPanelInventory();
-            
+            InventoryOrderType order = InputOrder();
+            switch (order)
+            {
+                case InventoryOrderType.SortAttAscending:
+                    SortInventory();
+                    break;
+                case InventoryOrderType.SortAttDescending:
+                    SortInventory();
+                    break;
+                case InventoryOrderType.SortHpAscending:
+                    SortInventory();
+                    break;
+                case InventoryOrderType.SortHpDescending:
+                    SortInventory();
+                    break;
+                case InventoryOrderType.Quit:
+                    return;
+            }
         }
         public void SortInventory()
         {
-
+            Console.WriteLine("정렬");
         }
         public void AddAlly(Ally character)
         {
@@ -35,9 +56,30 @@ namespace RaidStrategy
                 count++;
             }
         }
-        public void InputOrder()
+        public InventoryOrderType InputOrder()
         {
+            CommandPanelDraw();
+            while (true)
+            {
+                var inputKey = Console.ReadKey(true);
+                switch (inputKey.Key)
+                {
+                    case ConsoleKey.D1:
+                        return InventoryOrderType.SortAttAscending;
 
+                    case ConsoleKey.D2:
+                        return InventoryOrderType.SortAttDescending;
+
+                    case ConsoleKey.D3:
+                        return InventoryOrderType.SortHpAscending;
+
+                    case ConsoleKey.D4:
+                        return InventoryOrderType.SortHpDescending;
+
+                    case ConsoleKey.Q:
+                        return InventoryOrderType.Quit;
+                }
+            }
         }
 
         public void OutputVisualPanelInventory()
@@ -71,6 +113,21 @@ namespace RaidStrategy
                 // 그려질 리소스는 각 캐릭터가 가지고 있음
                 inventory[i].DrawAsciiArt(cursorX, cursorY);
             }
+        }
+        private void CommandPanelDraw()
+        {
+            string[] orderList = {
+                "       --------------------------------------",
+                "      /  1. 공격력 순으로 정렬 (오름차순)  / ",
+                "     /   2. 공격력 순으로 정렬 (내림차순) /  ",
+                "    /    3. 체력 순으로 정렬 (오름차순)  /   ",
+                "   /     4. 체력 순으로 정렬 (내림차순) /    ",
+                "  --------------------------------------     ",
+                " /       Q. 로비로 이동               /      ",
+                "--------------------------------------       "
+            };
+
+            GameManager.DrawCenterCommandPanel(orderList);
         }
     }
 }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace RaidStrategy
 {
-    enum OrderType
+    enum LobbyOrderType
     {
         Battle, MyDeck, Inventory, Quit
     }
     class Lobby
     {
-        public OrderType MainLobby(Player player)
+        
+        public LobbyOrderType MainLobby()
         {
             CommandPanelDraw();
 
@@ -20,16 +21,16 @@ namespace RaidStrategy
                 switch (inputKey.Key)
                 {
                     case ConsoleKey.D1:
-                        return OrderType.Battle;
+                        return LobbyOrderType.Battle;
 
                     case ConsoleKey.D2:
-                        return OrderType.MyDeck;
+                        return LobbyOrderType.MyDeck;
 
                     case ConsoleKey.D3:
-                        return OrderType.Inventory;
+                        return LobbyOrderType.Inventory;
 
                     case ConsoleKey.Q:
-                        return OrderType.Quit;
+                        return LobbyOrderType.Quit;
                 }
             }
         }
@@ -40,19 +41,19 @@ namespace RaidStrategy
             while (true) {
                 GameManager.ClearAllPanel();
                 DrawLobbyCharacter();
-                OrderType order = MainLobby(player);
+                LobbyOrderType order = MainLobby();
                 switch (order)
                 {
-                    case OrderType.Battle:
+                    case LobbyOrderType.Battle:
                         Console.WriteLine("전투 시작 선택됨");
                         break;
-                    case OrderType.MyDeck:
+                    case LobbyOrderType.MyDeck:
                         player.OpenMyDeck();
                         break;
-                    case OrderType.Inventory:
+                    case LobbyOrderType.Inventory:
                         player.OpenInventory();
                         break;
-                    case OrderType.Quit:
+                    case LobbyOrderType.Quit:
                         return;
                 }
             }
