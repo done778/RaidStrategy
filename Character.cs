@@ -68,6 +68,8 @@ namespace RaidStrategy
             }
             DrawInfo(startX, startY);
         }
+
+        // 각 캐릭터 이름, 스탯, 특능, 편성 정보 등을 출력
         public void DrawInfo(int startX, int startY)
         {
             int cursorX;
@@ -108,6 +110,16 @@ namespace RaidStrategy
                 cursorX = temp - des[i].Length;
                 Console.SetCursorPosition(startX + cursorX, cursorY + i);
                 Console.Write(des[i]);
+            }
+
+            if (IsDecking == true)
+            {
+                cursorY += 5;
+                cursorX = temp - 9;
+                Console.SetCursorPosition(startX + cursorX, cursorY);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("- 덱에  편성됨 -");
+                Console.ResetColor();
             }
         }
     }

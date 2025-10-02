@@ -21,11 +21,18 @@ namespace RaidStrategy
         {
             GameManager.ClearAllPanel();
             OutputVisualPanelInventory();
+            
         }
         public void SortInventory()
         {
 
         }
+
+        public void InputOrder()
+        {
+
+        }
+
         public void OutputVisualPanelInventory()
         {
             int cursorX = GameManager.BUFFER_SIZE_WIDTH / 4;
