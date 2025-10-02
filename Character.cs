@@ -48,12 +48,22 @@ namespace RaidStrategy
     }
 
     // 아군 클래스가 공통적으로 가질 요소는 편성 여부
-    class Ally : Character
+    abstract class Ally : Character
     {
         public bool IsDecking { get; set; }  
         public Ally(string name, int att, int hp) : base(name, att, hp) 
         { 
             IsDecking = false;
+        }
+        // 슬롯에 그려질 아스키 아트를 캐릭터마다 가지고 있어야 함
+        public abstract void DrawAsciiArt(int startX, int startY);
+        public void Drawing(int startX, int startY, string[] drawAscii)
+        {
+            for (int i = 0; i < drawAscii.Length; i++)
+            {
+                Console.SetCursorPosition(startX, startY + i);
+                Console.Write(drawAscii[i]);
+            }
         }
     }
 
@@ -62,17 +72,91 @@ namespace RaidStrategy
     {
         // 기본 스탯이 높은 탱커
         public SwordMan() : base("검사", 5, 12) { }
+
+        public override void DrawAsciiArt(int startX, int startY)
+        {
+            string[] drawAscii = {
+                "                                ",
+                "                     +*.        ",
+                "         .-==:       %@:        ",
+                "       -#+-:-+%=     @@+        ",
+                "      :#-.   .:#+.  +@%+        ",
+                "      =#:     .++. :@-%+        ",
+                "      .*#.. ..+*. :%- %+        ",
+                "       ..+%@@#.. .#*. %+        ",
+                "          @@:%*  *#.. @:        ",
+                "         :@:@*@=+#:  %@         ",
+                "         %*.:@%*-%@:.@:         ",
+                "         %+ .-@@@=.#@:          ",
+                "         %*  .=%=.              ",
+                "         =@#.                   ",
+                "         +%#@-                  ",
+                "         *%.-%=                 ",
+                "      .:+%= .-#                 ",
+                "     .*#=.  .-*                 ",
+                "                                "
+            };
+            Drawing(startX, startY, drawAscii);
+        }
     }
     class Fighter : Ally
     {
         // 기본 스탯이 높은 딜러
         public Fighter() : base("싸움꾼", 10, 8) { }
-
+        public override void DrawAsciiArt(int startX, int startY)
+        {
+            string[] drawAscii = {
+                "                                ",
+                "            ..-=-:.             ",
+                "           .#*-:-=#+.           ",
+                "          .@=     .#=           ",
+                "          .@.      #*           ",
+                "           -%:   .+@:           ",
+                "         .:%@@@%%#-..           ",
+                "      .#@%:.#%#+.               ",
+                "   -%*#=.  =% .**.              ",
+                "  .=@%%-  :@:   .=#@@@@.        ",
+                "   :#*:#@@+..                   ",
+                "    .=%*:.:#@%=:...             ",
+                "       :#@+: ..-*%%#=::.        ",
+                "        .:-%%+:.    :-%%%*-..   ",
+                "       .*%. .-#%#=:..    .++.   ",
+                "      .##.    .=+-*#%*-:.:*+.   ",
+                "    .-#*.     .+#:   .-*##+.    ",
+                "  .=#*-.      .-=.              ",
+                "                                "
+            };
+            Drawing(startX, startY, drawAscii);
+        }
     }
     class Berserker : Ally, ISpecialAbility
     {
         public Berserker() : base("광전사", 2, 15) { }
-
+        public override void DrawAsciiArt(int startX, int startY)
+        {
+            string[] drawAscii = {
+                "                     .%%:       ",
+                "                     %@:        ",
+                "            ..:::.. #@-         ",
+                "           .##---*#::- ..-+#+.  ",
+                "          .@:     :%: .++*@*:.  ",
+                "          :%       #- -#%+:.    ",
+                "          .%#.   .+#. ::.       ",
+                "          ..:#%%%%-...%.        ",
+                "         .@* .-*-   :@:         ",
+                "        .%* .%@%-  :@.          ",
+                "       .#+.:@@@*. :%:           ",
+                "      .#=.   .-* -%-.           ",
+                "     :#+.   .=@+-#-.            ",
+                "    :*+.   .##:-#=.             ",
+                "   :*+.   -@+.:#+:+:.           ",
+                " .:#+.   -@-.:#+  +%:           ",
+                " .:#:   :@=.:#+    ##.          ",
+                "  :*+   .--*#+      %+          ",
+                "  .+#:=*#*=.        +@.         "
+            };
+            Drawing(startX, startY, drawAscii);
+        }
         public void UniqueAbility()
         {
             // 피해를 받으면 공격력이 현재 수치의 2배가 됨.
@@ -81,7 +165,31 @@ namespace RaidStrategy
     class Archer : Ally, ISpecialAbility
     {
         public Archer() : base("궁사", 6, 5) { }
-
+        public override void DrawAsciiArt(int startX, int startY)
+        {
+            string[] drawAscii = {
+                "             ..::..             ",
+                "           .=#*==*#=.           ",
+                "           +%.    .#*           ",
+                "           @=      =@           ",
+                "           -@-    :%-           ",
+                "           .:+%%%%+:.           ",
+                "           .:%%@@#:.            ",
+                "         -%@*.:#+*+. -%%#:      ",
+                "         .*%  -%--%-.  .-%*.    ",
+                "           @= -%- **.    -#-    ",
+                "    :+:    .. -@= .-.    -#-    ",
+                "    =#:       .=+. .-%@@@%+.    ",
+                "    -#-     ...::..%*.          ",
+                "    .+%=.. .-@*--#@@:           ",
+                "      :+%##%#.    .:.           ",
+                "           .:     **.           ",
+                "           +%     :%:           ",
+                "          :@-      #*.          ",
+                "         .*+       -*.          "
+            };
+            Drawing(startX, startY, drawAscii);
+        }
         public void UniqueAbility()
         {
             // 맨 앞에 있지 않으면 지원 공격을 함.
@@ -90,7 +198,31 @@ namespace RaidStrategy
     class Boxer : Ally, ISpecialAbility
     {
         public Boxer() : base("격투가", 7, 7) { }
-
+        public override void DrawAsciiArt(int startX, int startY)
+        {
+            string[] drawAscii = {
+                "                                ",
+                "                      .-**+:.   ",
+                "           .=#***#+.. *@@@@#-   ",
+                "          .%*.   .=%: #@@@@%-   ",
+                "          :%       #- .-*%@%-   ",
+                "          .@+     -%:    -%%-   ",
+                "           .+%#+*%+:. -%::*%-   ",
+                "           ....:....  #% :**:   ",
+                "       .-%@%.-@+..*@@.%+:*%-.   ",
+                "      =@@:  .*#      =@+        ",
+                "        .#@::%-                 ",
+                "           .:#                  ",
+                "           .:%=                 ",
+                "           ..=%-.               ",
+                "         .:#%#+%%=..            ",
+                "       :#%#:    .+%*-.          ",
+                "       :#%:        :*%#-.       ",
+                "        .*#           .+*:      ",
+                "                                "
+            };
+            Drawing(startX, startY, drawAscii);
+        }
         public void UniqueAbility()
         {
             // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
@@ -100,30 +232,105 @@ namespace RaidStrategy
     class Magician : Ally, ISpecialAbility
     {
         public Magician() : base("마법사", 12, 2) { }
-
         public void UniqueAbility()
         {
             // 적을 쓰러뜨리면 현재 공격력이 3배가 됨.
             // 엄청난 공격력 뻥튀기, 낮은 체력.
             // 후반에 뻥튀기된 공격력으로 적에게 원기옥 모아서 원킬을 노리는 역할
         }
+        public override void DrawAsciiArt(int startX, int startY)
+        {
+            string[] drawAscii = 
+            {
+                "                                ",
+                "           ....       -***-.    ",
+                "         :##+=*#+.   -@..-#-    ",
+                "        =%:    .**:  .##+#*.    ",
+                "        #+.     -%-   .-%:.     ",
+                "        -%:    .++.   .=#.      ",
+                "         :#%%%%#=.    .+#       ",
+                "      ..#%.:@-=%%%%%%+:**       ",
+                "   .:#@*:..@*..........#+       ",
+                "    .*@-   @=         .#+       ",
+                "      -%-  @=         .#:       ",
+                "      ...  *%         .#:       ",
+                "           -@+.       .%.       ",
+                "          .@=+#.      .%.       ",
+                "          #% :%*      =%.       ",
+                "         -@: .-%-.    =%        ",
+                "       :#%-   .+*.    **        ",
+                "     .+#=.     =%-    *=        ",
+                "     .:.       .:.              "
+            };
+            Drawing(startX, startY, drawAscii);
+        }
     }
     class Scholar : Ally, ISpecialAbility
     {
         public Scholar() : base("학자", 4, 8) { }
-
         public void UniqueAbility()
         {
             // 매 턴 맨 앞에 위치한 아군의 체력 +2
+        }
+        public override void DrawAsciiArt(int startX, int startY)
+        {
+            string[] drawAscii =
+            {
+                "         .:+**+-.               ",
+                "        :#+: .:*#-.             ",
+                "       .#-.     +*:             ",
+                "       .#=.     +*.             ",
+                "        :%*: .:+*:.             ",
+                "         .:-++-:.        .:--.  ",
+                "        .=..:%@@@%%#-..:%@@@@#: ",
+                "      .*@-..+#:::=%@@@%@+:::#=. ",
+                "    .*@=.  :@:       *@.   =*:  ",
+                "   .+*.    *%        @:   :#=.  ",
+                "    .+@=. .@        #%    =*:   ",
+                "      ... +%        %:   :#=    ",
+                "         .@.......:%@#@@@@#:    ",
+                "         +%:::=+#@@@@=.         ",
+                "         .:  ...                ",
+                "        :%#  .-%*..             ",
+                "      .=%=.    .+%=..           ",
+                "   .:+%#:.       .#=.           ",
+                " .=%*-.           =@:           "
+            };
+            Drawing(startX, startY, drawAscii);
         }
     }
     class Oracle : Ally, ISpecialAbility
     {
         public Oracle() : base("점술사", 2, 8) { }
-
         public void UniqueAbility()
         {
             // 아군이 쓰러지면
+        }
+        public override void DrawAsciiArt(int startX, int startY)
+        {
+            string[] drawAscii = 
+            {
+                "                      =:  :==:. ",
+                "       .:==:.        :@%. .-+%: ",
+                "     .=#=--=*#:   -%@*-+%@*.=%: ",
+                "    .+*:    .-#: ::.#%++%- =*:. ",
+                "    .*+.    .-%-:#=.%#:=%*      ",
+                "     :#=.  .:%* =@-.            ",
+                "      .:#%%%+:   ..+%%#.        ",
+                "        --..+#:  +@+.           ",
+                "      .+%:+%.-@++*..            ",
+                "     .*%: +%  .=*.              ",
+                "     +%-  @=                    ",
+                "     .+%-.@#                    ",
+                "       ...:@=                   ",
+                "          .@@=                  ",
+                "          :@+#                  ",
+                "         .@*:#                  ",
+                "        .#%.:#                  ",
+                "        +%..:#                  ",
+                "        =-..:=                  "
+            };
+            Drawing(startX, startY, drawAscii);
         }
     }
 }

@@ -55,7 +55,7 @@ namespace RaidStrategy
                 cursorX = (GameManager.BUFFER_SIZE_WIDTH / 4) * (i % 4) + 1;
 
                 // 그려질 리소스는 각 캐릭터가 가지고 있음
-                // inventory[i].DrawAsciiArt(cursorX, cursorY);
+                inventory[i].DrawAsciiArt(cursorX, cursorY);
             }
         }
     }
