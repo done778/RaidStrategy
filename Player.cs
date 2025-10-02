@@ -67,6 +67,10 @@ namespace RaidStrategy
                 {
                     if (order == EntranceOrder.Enter)
                     {
+                        if(deck.IsEmpty())
+                        {
+                            continue;
+                        }
                         entrance.EnterBattleField();
                         break;
                     }

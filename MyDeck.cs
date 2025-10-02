@@ -104,6 +104,18 @@ namespace RaidStrategy
             myDeck[changeB] = temp;
         }
 
+        // 덱이 비었는지 확인
+        public bool IsEmpty()
+        {
+            for (int i = 0; i < myDeck.Length; i++)
+            {
+                if (myDeck[i] != null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         // 덱 화면 출력
         public void OutputVisualPanelMyDeck()
