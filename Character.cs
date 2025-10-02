@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace RaidStrategy
 {
@@ -38,6 +39,7 @@ namespace RaidStrategy
     // 특수 능력이 있는 캐릭터는 이 인터페이스를 상속 받는다.
     interface ISpecialAbility
     {
+        string[] Description { get; set; } // 특수 능력 설명
         void UniqueAbility();
     }
 
@@ -63,6 +65,49 @@ namespace RaidStrategy
             {
                 Console.SetCursorPosition(startX, startY + i);
                 Console.Write(drawAscii[i]);
+            }
+            DrawInfo(startX, startY);
+        }
+        public void DrawInfo(int startX, int startY)
+        {
+            int cursorX;
+            int temp = GameManager.BUFFER_SIZE_WIDTH / 8; //30
+            temp += (temp / 2); // 45
+            cursorX = temp - (Name.Length + 2); // 41
+            int cursorY;
+            cursorY = startY + 4;
+            Console.SetCursorPosition(startX + cursorX, cursorY);
+            Console.Write($"> {Name} <");
+
+            cursorX = temp - 5;
+            string att = $"공격력 : {StatusAttack}";
+            string hp = $" 체력  : {StatusHealth}";
+            cursorY += 2;
+            Console.SetCursorPosition(startX + cursorX, cursorY);
+            Console.Write(att);
+            Console.SetCursorPosition(startX + cursorX, cursorY + 1);
+            Console.Write(hp);
+
+            string skill = "- 특수  능력 -";
+            cursorX = temp - 7;
+            cursorY += 3;
+            Console.SetCursorPosition(startX + cursorX, cursorY);
+            Console.Write(skill);
+            string[] des;
+            if (this is ISpecialAbility)
+            {
+                des = (this as ISpecialAbility).Description;
+            }
+            else
+            {
+                des = new string[] { "특수 능력 없음" };
+            }
+            cursorY += 2;
+            for (int i = 0; i < des.Length; i++)
+            {
+                cursorX = temp - des[i].Length;
+                Console.SetCursorPosition(startX + cursorX, cursorY + i);
+                Console.Write(des[i]);
             }
         }
     }
@@ -131,7 +176,15 @@ namespace RaidStrategy
     }
     class Berserker : Ally, ISpecialAbility
     {
-        public Berserker() : base("광전사", 2, 15) { }
+        public string[] Description { get; set; }
+        public Berserker() : base("광전사", 2, 15) 
+        {
+            Description = new string[] {
+                "피해를 받으면",
+                "현재 공격력이",
+                "2 배가 됩니다."
+            };
+        }
         public override void DrawAsciiArt(int startX, int startY)
         {
             string[] drawAscii = {
@@ -164,7 +217,15 @@ namespace RaidStrategy
     }
     class Archer : Ally, ISpecialAbility
     {
-        public Archer() : base("궁사", 6, 5) { }
+        public string[] Description { get; set; }
+        public Archer() : base("궁사", 6, 5) 
+        {
+            Description = new string[] {
+                "현재 위치가",
+                "맨 앞이 아닐 경우",
+                "지원 사격을 합니다."
+            };
+        }
         public override void DrawAsciiArt(int startX, int startY)
         {
             string[] drawAscii = {
@@ -197,7 +258,15 @@ namespace RaidStrategy
     }
     class Boxer : Ally, ISpecialAbility
     {
-        public Boxer() : base("격투가", 7, 7) { }
+        public string[] Description { get; set; }
+        public Boxer() : base("격투가", 7, 7) 
+        {
+            Description = new string[] {
+                "공격 후",
+                "자신 뒤의 아군에게",
+                "피해를 1 줍니다."
+            };
+        }
         public override void DrawAsciiArt(int startX, int startY)
         {
             string[] drawAscii = {
@@ -231,7 +300,15 @@ namespace RaidStrategy
     }
     class Magician : Ally, ISpecialAbility
     {
-        public Magician() : base("마법사", 12, 2) { }
+        public string[] Description { get; set; }
+        public Magician() : base("마법사", 12, 2) 
+        {
+            Description = new string[] {
+                "적이 쓰러지면",
+                "현재 공격력이",
+                "3 배가 됩니다."
+            };
+        }
         public void UniqueAbility()
         {
             // 적을 쓰러뜨리면 현재 공격력이 3배가 됨.
@@ -267,7 +344,15 @@ namespace RaidStrategy
     }
     class Scholar : Ally, ISpecialAbility
     {
-        public Scholar() : base("학자", 4, 8) { }
+        public string[] Description { get; set; }
+        public Scholar() : base("학자", 4, 8) 
+        {
+            Description = new string[] {
+                "매 턴마다",
+                "맨 앞의 아군을",
+                "2 만큼 회복시킵니다."
+            };
+        }
         public void UniqueAbility()
         {
             // 매 턴 맨 앞에 위치한 아군의 체력 +2
@@ -301,7 +386,15 @@ namespace RaidStrategy
     }
     class Oracle : Ally, ISpecialAbility
     {
-        public Oracle() : base("점술사", 2, 8) { }
+        public string[] Description { get; set; }
+        public Oracle() : base("점술사", 2, 8) 
+        {
+            Description = new string[] {
+                "아군이 쓰러지면",
+                "모든 아군의 공격력이",
+                "2 배가 됩니다."
+            };
+        }
         public void UniqueAbility()
         {
             // 아군이 쓰러지면
