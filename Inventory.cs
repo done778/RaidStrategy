@@ -10,17 +10,16 @@ namespace RaidStrategy
     class Inventory
     {
         Ally[] inventory;
-        int count;
 
         public int Count 
-        { get { return count; } }
+        { get; private set; }
 
         public Inventory() {
             inventory = new Ally[GameManager.INVENTORY_CAPACITY];
             inventory[0] = new SwordMan();
             inventory[1] = new Scholar();
             inventory[2] = new Archer();
-            count = 3;
+            Count = 3;
         }
 
         // 로비에서 인벤토리 진입 시 실행되는 메서드
@@ -38,10 +37,10 @@ namespace RaidStrategy
         // 인벤토리에 캐릭터 추가
         public void AddAlly(Ally character)
         {
-            if (count < GameManager.INVENTORY_CAPACITY)
+            if (Count < GameManager.INVENTORY_CAPACITY)
             {
-                inventory[count] = character;
-                count++;
+                inventory[Count] = character;
+                Count++;
             }
         }
         // 명령어 입력 받기
@@ -70,28 +69,6 @@ namespace RaidStrategy
                 }
             }
         }
-        public bool CheckDecking(int index, out Ally character)
-        {
-            character = inventory[index];
-            return inventory[index].IsDecking;
-        }
-        public void IsDeckingChange(Ally target)
-        {
-            for (int i = 0; i < inventory.Length; i++) 
-            { 
-                if (target.Equals(inventory[i]))
-                {
-                    if (inventory[i].IsDecking == true)
-                    {
-                        inventory[i].IsDecking = false;
-                    }
-                    else
-                    {
-                        inventory[i].IsDecking = true;
-                    }
-                }
-            }
-        }
         public void OutputVisualPanelInventory()
         {
             int cursorX = GameManager.BUFFER_SIZE_WIDTH / 4;
@@ -112,7 +89,7 @@ namespace RaidStrategy
                 Console.Write("-");
             }
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 // 캐릭터들을 슬롯에 그리는건 캐릭터 클래스에서
                 // 여기선 시작 커서만 지정해줌
@@ -124,6 +101,44 @@ namespace RaidStrategy
                 inventory[i].DrawAsciiArt(cursorX, cursorY);
             }
         }
+        public Ally GetAllyAt(int index)
+        {
+            if (index < Count)
+            { return inventory[index]; }
+            else 
+            { return null; }
+        }
+
+        // 인벤토리에서 슬롯 하나를 입력받아 반환함.
+        public int SelectSlotFromInven()
+        {
+            while (true)
+            {
+                var inputKey = Console.ReadKey(true);
+                switch (inputKey.Key)
+                {
+                    case ConsoleKey.Q:
+                        return -1;
+                    case ConsoleKey.D1:
+                        return 0;
+                    case ConsoleKey.D2:
+                        return 1;
+                    case ConsoleKey.D3:
+                        return 2;
+                    case ConsoleKey.D4:
+                        return 3;
+                    case ConsoleKey.D5:
+                        return 4;
+                    case ConsoleKey.D6:
+                        return 5;
+                    case ConsoleKey.D7:
+                        return 6;
+                    case ConsoleKey.D8:
+                        return 7;
+                }
+            }
+        }
+
         private void CommandPanelDraw()
         {
             string[] orderList = {

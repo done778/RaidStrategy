@@ -23,6 +23,7 @@ namespace RaidStrategy
             OutputVisualPanelMyDeck();
             return InputOrder();
         }
+        // 덱에서 바꿀 슬롯의 번호나 나가기 명령을 입력 받음
         public ChangeSlot InputOrder()
         {
             CommandPanelDraw();
@@ -48,6 +49,29 @@ namespace RaidStrategy
                 }
             } 
         }
+
+        // 선택된 캐릭터를 덱의 슬롯에 삽입을 시도함.
+        // 1. 이미 덱에 편성되어 있을 경우 -> 교체 -> 슬롯이 같으면 아무 일 없음
+        // 2. 덱에 편성되어 있지 않을 경우 -> 선택한 캐릭은 해당 슬롯에 삽입
+        //                                 -> IsDecking 값 변경
+        public void DeckUpdate(Ally selectSlot, ChangeSlot order)
+        {
+
+            int index = SearchIndex(selectSlot);
+            // 이미 덱에 있는가? -> -1이면 없음
+
+            if (index == -1) 
+            {
+                Ally prevChar = InsertCharacter(selectSlot, (int)order);
+                if (prevChar != null) prevChar.IsDecking = false;
+                if (selectSlot != null) selectSlot.IsDecking = true;
+            }
+            else
+            {
+                ChangeSlotCharacter(index, (int)order);
+            }
+        }
+
         // 매개변수 index위치에 target 캐릭터를 덱에 삽입
         public Ally InsertCharacter(Ally target, int index)
         {
@@ -63,6 +87,7 @@ namespace RaidStrategy
         // 매개변수 캐릭터를 찾아 위치를 반환
         public int SearchIndex(Ally target)
         {
+            if (target == null) return -1;
             for (int i = 0; i < myDeck.Length; i++) {
                 if (target.Equals(myDeck[i]))
                 {
@@ -80,6 +105,8 @@ namespace RaidStrategy
             myDeck[changeB] = temp;
         }
 
+
+        // 덱 화면 출력
         public void OutputVisualPanelMyDeck()
         {
             int cursorX = GameManager.BUFFER_SIZE_WIDTH / 4;
