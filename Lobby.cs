@@ -45,7 +45,7 @@ namespace RaidStrategy
                 switch (order)
                 {
                     case LobbyOrderType.Battle:
-                        Console.WriteLine("전투 시작 선택됨");
+                        player.BattlePreparation();
                         break;
                     case LobbyOrderType.MyDeck:
                         player.OpenMyDeck();

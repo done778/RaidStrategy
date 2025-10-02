@@ -5,9 +5,9 @@ namespace RaidStrategy
 {
     class Player
     {
-        public string Name { get; set; }
-        public string Affiliation { get; set; }
-
+        public string Name { get; private set; }
+        public string Affiliation { get; private set; }
+        public int ClearLevel { get; set; }
         Inventory inventory;
         MyDeck deck;
 
@@ -17,11 +17,13 @@ namespace RaidStrategy
             Affiliation = _aff;
             inventory = new Inventory();
             deck = new MyDeck();
+            ClearLevel = 0;
         }
         public void OpenInventory()
         {
             while (true) 
             {
+                // 인벤토리 정렬 또는 나가기 명령을 받음
                 InventoryOrderType order = inventory.EnterInventory();
                 if (order == InventoryOrderType.Quit) 
                 { return; }
@@ -38,7 +40,7 @@ namespace RaidStrategy
                 { return; }
                 else
                 {
-                    SelectPanelUpdate();
+                    DeckChangeUI();
                     int selectSlot = inventory.SelectSlotFromInven();
                     if (selectSlot == -1) // Q 입력 처리
                     {
@@ -51,7 +53,21 @@ namespace RaidStrategy
                 }
             }  
         }
-        public void SelectPanelUpdate()
+
+        public void BattlePreparation()
+        {
+            FieldEntrance entrance = new FieldEntrance(this);
+            deck.OutputVisualPanelMyDeck();
+            EntranceOrder order = entrance.EnterEntrance();
+            if (order == EntranceOrder.Quit)
+            { return; }
+            else
+            {
+
+            }
+        }
+
+        public void DeckChangeUI()
         {
             // 비주얼, 커맨드 패널 갱신
             GameManager.ClearAllPanel();

@@ -24,7 +24,7 @@ namespace RaidStrategy
             return InputOrder();
         }
         // 덱에서 바꿀 슬롯의 번호나 나가기 명령을 입력 받음
-        public ChangeSlot InputOrder()
+        private ChangeSlot InputOrder()
         {
             CommandPanelDraw();
             while (true)
@@ -56,9 +56,8 @@ namespace RaidStrategy
         //                                 -> IsDecking 값 변경
         public void DeckUpdate(Ally selectSlot, ChangeSlot order)
         {
-
-            int index = SearchIndex(selectSlot);
             // 이미 덱에 있는가? -> -1이면 없음
+            int index = SearchIndex(selectSlot);
 
             if (index == -1) 
             {
