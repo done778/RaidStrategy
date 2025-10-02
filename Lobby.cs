@@ -9,7 +9,7 @@ namespace RaidStrategy
     }
     class Lobby
     {
-        public void MainLobby()
+        public void MainLobby(Player player)
         {
             OrderType order = InputOrder();
             
@@ -19,23 +19,22 @@ namespace RaidStrategy
                     Console.WriteLine("전투 시작 선택됨");
                     break;
                 case OrderType.MyDeck:
-                    Console.WriteLine("내 덱 조회/변경 선택됨");
+                    player.OpenMyDeck();
                     break;
                 case OrderType.Inventory:
-                    Console.WriteLine("인벤토리 조회 선택됨");
+                    player.OpenInventory();
                     break;
                 case OrderType.Quit:
                     return;
             }
-
         }
 
         // 다른 곳에서 로비 진입은 이 메서드를 통해서 합니다.
-        public void EnterLobby()
+        public void EnterLobby(Player player)
         {
             GameManager.ClearAllPanel();
             DrawLobbyCharacter();
-            MainLobby();
+            MainLobby(player);
         }
 
         private void DrawLobbyCharacter()

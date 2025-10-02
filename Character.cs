@@ -51,7 +51,10 @@ namespace RaidStrategy
     class Ally : Character
     {
         public bool IsDecking { get; set; }  
-        public Ally(string name, int att, int hp) : base(name, att, hp) { }
+        public Ally(string name, int att, int hp) : base(name, att, hp) 
+        { 
+            IsDecking = false;
+        }
     }
 
     // 8종류의 각 캐릭터들은 처음 생성시 고정된 이름과 스탯을 가진다.

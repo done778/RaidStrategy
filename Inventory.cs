@@ -29,7 +29,7 @@ namespace RaidStrategy
         public void OutputVisualPanelInventory()
         {
             int cursorX = GameManager.BUFFER_SIZE_WIDTH / 4;
-
+            int cursorY;
             GameManager.ClearVisualPanel();
 
             for (int i = 1; i <= 3; i++) 
@@ -44,6 +44,18 @@ namespace RaidStrategy
             for (int i = 0; i < GameManager.BUFFER_SIZE_WIDTH - 2; i++)
             {
                 Console.Write("-");
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                // 캐릭터들을 슬롯에 그리는건 캐릭터 클래스에서
+                // 여기선 시작 커서만 지정해줌
+                // 위 4칸 아래 4칸이므로 조건에 따라 Y축 커서를 조절해줌
+                cursorY = i > 3 ? GameManager.HORIZON_AREA + 1 : 1;
+                cursorX = (GameManager.BUFFER_SIZE_WIDTH / 4) * (i % 4) + 1;
+
+                // 그려질 리소스는 각 캐릭터가 가지고 있음
+                // inventory[i].DrawAsciiArt(cursorX, cursorY);
             }
         }
     }

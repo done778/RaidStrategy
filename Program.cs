@@ -22,7 +22,7 @@ namespace RaidStrategy
             Console.CursorVisible = false;
 
             Lobby lobby = new Lobby();
-            lobby.EnterLobby();
+            lobby.EnterLobby(player);
 
             Console.ReadLine();
         }
