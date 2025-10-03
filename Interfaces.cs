@@ -5,6 +5,7 @@ namespace RaidStrategy
     interface ISpecialAbility
     {
         string[] Description { get; set; } // 특수 능력 설명
-        void UniqueAbility();
+        void CastingSpecialAbility(); // 특수 능력 발동
+        void CheckTriggerCondition(); // 발동 조건
     }
 }

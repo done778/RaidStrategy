@@ -198,9 +198,13 @@ namespace RaidStrategy
                 "2 배가 됩니다."
             };
         }
-        public void UniqueAbility()
+        public void CastingSpecialAbility()
         {
             // 피해를 받으면 공격력이 현재 수치의 2배가 됨.
+        }
+        public void CheckTriggerCondition()
+        {
+
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -240,9 +244,13 @@ namespace RaidStrategy
                 "지원 사격을 합니다."
             };
         }
-        public void UniqueAbility()
+        public void CastingSpecialAbility()
         {
             // 맨 앞에 있지 않으면 지원 공격을 함.
+        }
+        public void CheckTriggerCondition()
+        {
+
         }
 
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
@@ -283,10 +291,14 @@ namespace RaidStrategy
                 "피해를 1 줍니다."
             };
         }
-        public void UniqueAbility()
+        public void CastingSpecialAbility()
         {
             // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
             // 특수 능력 트리거로서 활용
+        }
+        public void CheckTriggerCondition()
+        {
+
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -326,11 +338,15 @@ namespace RaidStrategy
                 "3 배가 됩니다."
             };
         }
-        public void UniqueAbility()
+        public void CastingSpecialAbility()
         {
             // 적을 쓰러뜨리면 현재 공격력이 3배가 됨.
             // 엄청난 공격력 뻥튀기, 낮은 체력.
             // 후반에 뻥튀기된 공격력으로 적에게 원기옥 모아서 원킬을 노리는 역할
+        }
+        public void CheckTriggerCondition()
+        {
+
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -372,9 +388,13 @@ namespace RaidStrategy
                 "2 만큼 회복시킵니다."
             };
         }
-        public void UniqueAbility()
+        public void CastingSpecialAbility()
         {
             // 매 턴 맨 앞에 위치한 아군의 체력 +2
+        }
+        public void CheckTriggerCondition()
+        {
+
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -415,9 +435,13 @@ namespace RaidStrategy
                 "2 배가 됩니다."
             };
         }
-        public void UniqueAbility()
+        public void CastingSpecialAbility()
         {
             // 아군이 쓰러지면
+        }
+        public void CheckTriggerCondition()
+        {
+            
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -446,5 +470,7 @@ namespace RaidStrategy
             DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Oracle(); }
+
+        
     }
 }
