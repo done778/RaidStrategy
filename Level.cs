@@ -38,8 +38,29 @@ namespace RaidStrategy
             if (enemies.Count > 0)
             {
                 enemies[0].DrawAsciiArt();
-                Console.ReadLine();
             }
+        }
+        public bool CheckDeath()
+        {
+            if (enemies[0].StatusHealth <= 0)
+            {
+                enemies[0].DrawAsciiArt(true);
+                enemies.RemoveAt(0);
+                return true;
+            }
+            return false;
+        }
+        public int GetRemainEnemy()
+        {
+            return enemies.Count;
+        }
+        public string ExecuteAttack(Character target)
+        {
+            return enemies[0].Attack(target);
+        }
+        public Character GetCurrentEnemy()
+        {
+            return enemies[0];
         }
     }
 }

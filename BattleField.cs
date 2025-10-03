@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace RaidStrategy
 {
@@ -21,12 +22,76 @@ namespace RaidStrategy
             }
         }
 
-        public void StartBattle()
+        public bool StartBattle()
+        {
+            PanelUpdate();
+            ShowStartMessage();
+            EnterToNextAction();
+            bool EndBattle = false; // 전투 종료 여부
+            bool isVictory = false; // 전투 승리 or 패배 여부
+            while (!EndBattle) // 전투가 종료될 때까지 반복
+            {
+                EndBattle = ExecuteOneTurn();
+                EnterToNextAction();
+            }
+            if (level.GetRemainEnemy() == 0)
+            {
+                isVictory = true;
+            }
+            return isVictory; 
+        }
+
+        private bool ExecuteOneTurn()
+        {
+            combatInteraction();
+            if(level.CheckDeath())
+            {
+                if (level.GetRemainEnemy() == 0) // 남은 적이 없다면 전투 종료
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void combatInteraction()
+        {
+            string[] log = {
+                cloneDeck[0].Attack(level.GetCurrentEnemy()),
+                level.ExecuteAttack(cloneDeck[0])
+            };
+            PanelUpdate();
+            GameManager.DrawCenterCommandPanel(log);
+        }
+
+        private void EnterToNextAction()
+        {
+            while(true)
+            {
+                var inputKey = Console.ReadKey();
+                if (inputKey.Key == ConsoleKey.Enter)
+                {
+                    return;
+                }
+            }
+        }
+
+        private void ShowStartMessage()
+        {
+            string[] msg = { 
+                "엔터 키를 누를 때마다 한 턴씩 전투가 진행 됩니다.", 
+                "     전투를 시작하려면 엔터 키를 눌러주세요.     " 
+            };
+            GameManager.DrawCenterCommandPanel(msg);
+        }
+
+        public void PanelUpdate()
         {
             GameManager.ClearAllPanel();
             VisualPanelUpdate();
             level.DrawEnemy();
         }
+
         public void VisualPanelUpdate()
         {
             int cursorX = 0;

@@ -26,10 +26,10 @@ namespace RaidStrategy
             StatusHealth -= damage;
         }
 
-        public void Attack(Character target)
+        public string Attack(Character target)
         {
             target.TakeDamage(StatusAttack);
-            Console.WriteLine($"{this.Name} 이(가) {target.Name} 에게 {StatusAttack} 의 피해를 줌!");
+            return $"{this.Name} 이(가) {target.Name} 에게 {StatusAttack} 의 피해를 줌!";
         }
         public void Death()
         {
