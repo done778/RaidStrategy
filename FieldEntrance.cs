@@ -20,9 +20,9 @@ namespace RaidStrategy
             return InputOrder();
         }
 
-        public void EnterBattleField()
+        public void EnterBattleField(Ally[] deck)
         {
-            BattleField battleField = new BattleField(player);
+            BattleField battleField = new BattleField(player, deck);
             battleField.StartBattle();
         }
 

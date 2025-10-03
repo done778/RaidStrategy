@@ -71,7 +71,7 @@ namespace RaidStrategy
                         {
                             continue;
                         }
-                        entrance.EnterBattleField();
+                        entrance.EnterBattleField(deck.GetMyDeck());
                         break;
                     }
                     else

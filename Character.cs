@@ -59,6 +59,7 @@ namespace RaidStrategy
         }
         // 슬롯에 그려질 아스키 아트를 캐릭터마다 가지고 있어야 함
         public abstract void DrawAsciiArt(int startX, int startY);
+        public abstract Ally GetClone();
         protected void Drawing(int startX, int startY, string[] drawAscii)
         {
             for (int i = 0; i < drawAscii.Length; i++)
@@ -129,7 +130,6 @@ namespace RaidStrategy
     {
         // 기본 스탯이 높은 탱커
         public SwordMan() : base("검사", 5, 12) { }
-
         public override void DrawAsciiArt(int startX, int startY)
         {
             string[] drawAscii = {
@@ -155,6 +155,7 @@ namespace RaidStrategy
             };
             Drawing(startX, startY, drawAscii);
         }
+        public override Ally GetClone() { return new SwordMan(); }
     }
     class Fighter : Ally
     {
@@ -185,6 +186,7 @@ namespace RaidStrategy
             };
             Drawing(startX, startY, drawAscii);
         }
+        public override Ally GetClone() { return new Fighter(); }
     }
     class Berserker : Ally, ISpecialAbility
     {
@@ -196,6 +198,10 @@ namespace RaidStrategy
                 "현재 공격력이",
                 "2 배가 됩니다."
             };
+        }
+        public void UniqueAbility()
+        {
+            // 피해를 받으면 공격력이 현재 수치의 2배가 됨.
         }
         public override void DrawAsciiArt(int startX, int startY)
         {
@@ -222,10 +228,7 @@ namespace RaidStrategy
             };
             Drawing(startX, startY, drawAscii);
         }
-        public void UniqueAbility()
-        {
-            // 피해를 받으면 공격력이 현재 수치의 2배가 됨.
-        }
+        public override Ally GetClone() { return new Berserker(); }
     }
     class Archer : Ally, ISpecialAbility
     {
@@ -238,6 +241,11 @@ namespace RaidStrategy
                 "지원 사격을 합니다."
             };
         }
+        public void UniqueAbility()
+        {
+            // 맨 앞에 있지 않으면 지원 공격을 함.
+        }
+
         public override void DrawAsciiArt(int startX, int startY)
         {
             string[] drawAscii = {
@@ -263,10 +271,7 @@ namespace RaidStrategy
             };
             Drawing(startX, startY, drawAscii);
         }
-        public void UniqueAbility()
-        {
-            // 맨 앞에 있지 않으면 지원 공격을 함.
-        }
+        public override Ally GetClone() { return new Archer(); }
     }
     class Boxer : Ally, ISpecialAbility
     {
@@ -278,6 +283,11 @@ namespace RaidStrategy
                 "자신 뒤의 아군에게",
                 "피해를 1 줍니다."
             };
+        }
+        public void UniqueAbility()
+        {
+            // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
+            // 특수 능력 트리거로서 활용
         }
         public override void DrawAsciiArt(int startX, int startY)
         {
@@ -304,11 +314,7 @@ namespace RaidStrategy
             };
             Drawing(startX, startY, drawAscii);
         }
-        public void UniqueAbility()
-        {
-            // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
-            // 특수 능력 트리거로서 활용
-        }
+        public override Ally GetClone() { return new Boxer(); }
     }
     class Magician : Ally, ISpecialAbility
     {
@@ -353,6 +359,8 @@ namespace RaidStrategy
             };
             Drawing(startX, startY, drawAscii);
         }
+
+        public override Ally GetClone() { return new Magician(); }
     }
     class Scholar : Ally, ISpecialAbility
     {
@@ -395,6 +403,7 @@ namespace RaidStrategy
             };
             Drawing(startX, startY, drawAscii);
         }
+        public override Ally GetClone() { return new Scholar(); }
     }
     class Oracle : Ally, ISpecialAbility
     {
@@ -437,5 +446,6 @@ namespace RaidStrategy
             };
             Drawing(startX, startY, drawAscii);
         }
+        public override Ally GetClone() { return new Oracle(); }
     }
 }
