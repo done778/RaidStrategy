@@ -24,9 +24,10 @@ namespace RaidStrategy
         public void StartBattle()
         {
             GameManager.ClearAllPanel();
-            DrawVisualPanel();
+            VisualPanelUpdate();
+            level.DrawEnemy();
         }
-        public void DrawVisualPanel()
+        public void VisualPanelUpdate()
         {
             int cursorX = 0;
             int cursorY = GameManager.HORIZON_AREA / 4;
@@ -67,8 +68,6 @@ namespace RaidStrategy
                 Console.SetCursorPosition(cursorX+6, cursorY);
                 Console.Write(cloneDeck[i].StatusHealth);
             }
-
-            Console.ReadLine();
         }
     }
 }
