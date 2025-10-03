@@ -17,15 +17,11 @@ namespace RaidStrategy
         }
 
         // 로비에서 내 덱 진입 시 실행되는 메서드
-        public void EnterMyDeck()
+        public ChangeSlot EnterMyDeck()
         {
             GameManager.ClearAllPanel();
             OutputVisualPanelMyDeck();
-            ChangeSlot order = InputOrder();
-            if (order == ChangeSlot.Quit) {
-                return;
-            }
-            ChangeSlotCharacter((int)order);
+            return InputOrder();
         }
         // 덱에서 바꿀 슬롯의 번호나 나가기 명령을 입력 받음
         private ChangeSlot InputOrder()
@@ -87,10 +83,9 @@ namespace RaidStrategy
             return previousChar;
         }
 
-
-        private void ChangeSlotCharacter(int index)
+        // 매개변수 캐릭터를 찾아 위치를 반환
+        public int SearchIndex(Ally target)
         {
-
             if (target == null) return -1;
             for (int i = 0; i < myDeck.Length; i++) {
                 if (target.Equals(myDeck[i]))
@@ -107,21 +102,8 @@ namespace RaidStrategy
             Ally temp = myDeck[changeA];
             myDeck[changeA] = myDeck[changeB];
             myDeck[changeB] = temp;
-            myDeck[index] = null;
         }
 
-        // 덱이 비었는지 확인
-        public bool IsEmpty()
-        {
-            for (int i = 0; i < myDeck.Length; i++)
-            {
-                if (myDeck[i] != null)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
 
         // 덱 화면 출력
         public void OutputVisualPanelMyDeck()
@@ -201,6 +183,23 @@ namespace RaidStrategy
                 " -------------------------------------- ",
                 "|             Q. 돌아가기              |",
                 " -------------------------------------- "
+            };
+
+            GameManager.DrawCenterCommandPanel(orderList);
+        }
+
+        public void SlotChangeCommandPanelDraw()
+        {
+            string[] orderList = {
+                " --------------------------------------- ",
+                "|    슬롯에 담을 캐릭터를 선택하세요.   |",
+                "|                                       |",
+                "|   |   1   |   2   |   3   |   4   |   |",
+                "|   ---------------------------------   |",
+                "|   |   5   |   6   |   7   |   8   |   |",
+                "|--------------------------------------- ",
+                "|               Q. 취소                 |",
+                "---------------------------------------- "
             };
 
             GameManager.DrawCenterCommandPanel(orderList);

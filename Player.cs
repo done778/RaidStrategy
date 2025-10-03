@@ -67,10 +67,6 @@ namespace RaidStrategy
                 {
                     if (order == EntranceOrder.Enter)
                     {
-                        if(deck.IsEmpty())
-                        {
-                            continue;
-                        }
                         entrance.EnterBattleField();
                         break;
                     }
@@ -88,13 +84,6 @@ namespace RaidStrategy
             GameManager.ClearAllPanel();
             inventory.OutputVisualPanelInventory();
             deck.SlotChangeCommandPanelDraw();
-
-            inventory.EnterInventory();
-        }
-        public void OpenMyDeck()
-        {
-            deck.EnterMyDeck();
-
         }
     }
 }
