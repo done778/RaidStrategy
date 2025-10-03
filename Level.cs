@@ -6,10 +6,10 @@ namespace RaidStrategy
     class Level
     {
         public Level(int level) 
-        { 
-
+        {
+            InitLevel(level);
         }
-        public void InitLevel()
+        private void InitLevel(int level)
         {
 
         }

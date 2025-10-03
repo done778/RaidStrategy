@@ -58,16 +58,16 @@ namespace RaidStrategy
             IsDecking = false;
         }
         // 슬롯에 그려질 아스키 아트를 캐릭터마다 가지고 있어야 함
-        public abstract void DrawAsciiArt(int startX, int startY);
+        public abstract void DrawAsciiArt(int startX, int startY, bool Info = true);
         public abstract Ally GetClone();
-        protected void Drawing(int startX, int startY, string[] drawAscii)
+        protected void DrawingImage(int startX, int startY, string[] drawAscii, bool Info)
         {
             for (int i = 0; i < drawAscii.Length; i++)
             {
                 Console.SetCursorPosition(startX, startY + i);
                 Console.Write(drawAscii[i]);
             }
-            DrawInfo(startX, startY);
+            if (Info) { DrawInfo(startX, startY); }
         }
 
         // 각 캐릭터 이름, 스탯, 특능, 편성 정보 등을 출력
@@ -130,7 +130,7 @@ namespace RaidStrategy
     {
         // 기본 스탯이 높은 탱커
         public SwordMan() : base("검사", 5, 12) { }
-        public override void DrawAsciiArt(int startX, int startY)
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii = {
                 "                                ",
@@ -153,7 +153,7 @@ namespace RaidStrategy
                 "     .*#=.  .-*                 ",
                 "                                "
             };
-            Drawing(startX, startY, drawAscii);
+            DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new SwordMan(); }
     }
@@ -161,7 +161,7 @@ namespace RaidStrategy
     {
         // 기본 스탯이 높은 딜러
         public Fighter() : base("싸움꾼", 10, 8) { }
-        public override void DrawAsciiArt(int startX, int startY)
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii = {
                 "                                ",
@@ -184,7 +184,7 @@ namespace RaidStrategy
                 "  .=#*-.      .-=.              ",
                 "                                "
             };
-            Drawing(startX, startY, drawAscii);
+            DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Fighter(); }
     }
@@ -203,7 +203,7 @@ namespace RaidStrategy
         {
             // 피해를 받으면 공격력이 현재 수치의 2배가 됨.
         }
-        public override void DrawAsciiArt(int startX, int startY)
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii = {
                 "                     .%%:       ",
@@ -226,7 +226,7 @@ namespace RaidStrategy
                 "  :*+   .--*#+      %+          ",
                 "  .+#:=*#*=.        +@.         "
             };
-            Drawing(startX, startY, drawAscii);
+            DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Berserker(); }
     }
@@ -246,7 +246,7 @@ namespace RaidStrategy
             // 맨 앞에 있지 않으면 지원 공격을 함.
         }
 
-        public override void DrawAsciiArt(int startX, int startY)
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii = {
                 "             ..::..             ",
@@ -269,7 +269,7 @@ namespace RaidStrategy
                 "          :@-      #*.          ",
                 "         .*+       -*.          "
             };
-            Drawing(startX, startY, drawAscii);
+            DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Archer(); }
     }
@@ -289,7 +289,7 @@ namespace RaidStrategy
             // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
             // 특수 능력 트리거로서 활용
         }
-        public override void DrawAsciiArt(int startX, int startY)
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii = {
                 "                                ",
@@ -312,7 +312,7 @@ namespace RaidStrategy
                 "        .*#           .+*:      ",
                 "                                "
             };
-            Drawing(startX, startY, drawAscii);
+            DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Boxer(); }
     }
@@ -333,7 +333,7 @@ namespace RaidStrategy
             // 엄청난 공격력 뻥튀기, 낮은 체력.
             // 후반에 뻥튀기된 공격력으로 적에게 원기옥 모아서 원킬을 노리는 역할
         }
-        public override void DrawAsciiArt(int startX, int startY)
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii = 
             {
@@ -357,7 +357,7 @@ namespace RaidStrategy
                 "     .+#=.     =%-    *=        ",
                 "     .:.       .:.              "
             };
-            Drawing(startX, startY, drawAscii);
+            DrawingImage(startX, startY, drawAscii, Info);
         }
 
         public override Ally GetClone() { return new Magician(); }
@@ -377,7 +377,7 @@ namespace RaidStrategy
         {
             // 매 턴 맨 앞에 위치한 아군의 체력 +2
         }
-        public override void DrawAsciiArt(int startX, int startY)
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii =
             {
@@ -401,7 +401,7 @@ namespace RaidStrategy
                 "   .:+%#:.       .#=.           ",
                 " .=%*-.           =@:           "
             };
-            Drawing(startX, startY, drawAscii);
+            DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Scholar(); }
     }
@@ -420,7 +420,7 @@ namespace RaidStrategy
         {
             // 아군이 쓰러지면
         }
-        public override void DrawAsciiArt(int startX, int startY)
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii = 
             {
@@ -444,7 +444,7 @@ namespace RaidStrategy
                 "        +%..:#                  ",
                 "        =-..:=                  "
             };
-            Drawing(startX, startY, drawAscii);
+            DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Oracle(); }
     }
