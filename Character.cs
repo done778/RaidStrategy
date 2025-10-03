@@ -24,6 +24,10 @@ namespace RaidStrategy
         public void TakeDamage(int damage)
         {
             StatusHealth -= damage;
+            if(StatusHealth <= 0)
+            {
+                Death();
+            }
         }
 
         public string Attack(Character target)

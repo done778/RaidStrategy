@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RaidStrategy
@@ -78,6 +79,47 @@ namespace RaidStrategy
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("- 덱에  편성됨 -");
                 Console.ResetColor();
+            }
+        }
+        public void DrawingDeath(int startX, int startY)
+        {
+            string[] drawAscii =
+            {
+                "                                ",
+                "                                ",
+                "                                ",
+                "                                ",
+                "                                ",
+                "                                ",
+                "                   :%%**%#-     ",
+                "                  *%:    :*+    ",
+                "                  #-      =*:   ",
+                "             .-%= *%     :*+    ",
+                "          .#@#.    :%@+*%#-     ",
+                "        .*%-          .         ",
+                "       .#*.          %+         ",
+                "       .*..#####:.   %*         ",
+                "     .=#: ....:+%-   +@         ",
+                "    .:*=.   ..+%-.   =@.        ",
+                "  -=+*%-    .##:.    .@-.       ",
+                " .:-:       .-:.      --.       ",
+                "                                "
+            };
+            Console.ForegroundColor = ConsoleColor.Red;
+            for (int i = 0; i < drawAscii.Length; i++)
+            {
+                Console.SetCursorPosition(startX, startY + i);
+                Console.Write(drawAscii[i]);
+            }
+            Console.ResetColor();
+            for (int i = 0; i < drawAscii.Length; i++)
+            {
+                Console.SetCursorPosition(startX, startY + i);
+                for (int j = 0; j < drawAscii[0].Length; j++)
+                {
+                    Console.Write(" ");
+                }
+                Thread.Sleep(50);
             }
         }
     }

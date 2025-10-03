@@ -6,6 +6,9 @@ namespace RaidStrategy
 {
     class BattleField
     {
+        static int interval = GameManager.BUFFER_SIZE_WIDTH / 3 * 2 / 4; // 40
+        static int cursorY = GameManager.HORIZON_AREA / 4;
+        static int cursorX = (GameManager.BUFFER_SIZE_WIDTH / 3 * 2) + 3;
         Player Player { get; set; }
         List<Ally> cloneDeck;
         Level level;
@@ -34,6 +37,7 @@ namespace RaidStrategy
                 EndBattle = ExecuteOneTurn();
                 EnterToNextAction();
             }
+
             if (level.GetRemainEnemy() == 0)
             {
                 isVictory = true;
@@ -43,12 +47,21 @@ namespace RaidStrategy
 
         private bool ExecuteOneTurn()
         {
+            PanelUpdate();
             combatInteraction();
             if(level.CheckDeath())
             {
                 if (level.GetRemainEnemy() == 0) // 남은 적이 없다면 전투 종료
                 {
                     return true;
+                }
+            }
+            for (int i = 0; i < cloneDeck.Count; i++)
+            {
+                if (cloneDeck[i].IsAlive == false)
+                {
+                    cloneDeck[i].DrawingDeath(cursorX + 7 - (interval * (i + 1)), cursorY + 1);
+                    cloneDeck.RemoveAt(i);
                 }
             }
             return false;
@@ -94,16 +107,12 @@ namespace RaidStrategy
 
         public void VisualPanelUpdate()
         {
-            int cursorX = 0;
-            int cursorY = GameManager.HORIZON_AREA / 4;
-            
             Console.SetCursorPosition(1, cursorY - 1);
             for (int i = 0; i < GameManager.BUFFER_SIZE_WIDTH / 3; i++)
             {
                 Console.Write("- ");
             }
-            cursorY += GameManager.HORIZON_AREA / 2;
-            Console.SetCursorPosition(1, cursorY + 1);
+            Console.SetCursorPosition(1, cursorY + GameManager.HORIZON_AREA / 2 + 1);
             for (int i = 0; i < GameManager.BUFFER_SIZE_WIDTH / 3; i++)
             {
                 Console.Write("- ");
@@ -112,25 +121,24 @@ namespace RaidStrategy
 
             for (int i = 0; i < cloneDeck.Count; i++) 
             {
-                cursorY = GameManager.HORIZON_AREA / 4;
-                cursorX = (GameManager.BUFFER_SIZE_WIDTH / 3 * 2) - (interval * (i+1)) + 3;
-                cloneDeck[i].DrawAsciiArt(cursorX + 7, cursorY + 1, false);
+                cloneDeck[i].DrawAsciiArt(cursorX + 7 - (interval * (i + 1)), cursorY + 1, false);
 
-                cursorX += interval / 2;
-                cursorY += GameManager.HORIZON_AREA / 2 + 3;
-                Console.SetCursorPosition(cursorX - cloneDeck[i].Name.Length, cursorY);
+                int pivotX = (interval / 2) - (interval * (i + 1));
+                int pivotY = GameManager.HORIZON_AREA / 2;
+
+                Console.SetCursorPosition(cursorX + pivotX - cloneDeck[i].Name.Length, cursorY + (pivotY + 3));
                 Console.Write(cloneDeck[i].Name);
 
-                cursorY += 2;
-                Console.SetCursorPosition(cursorX-10, cursorY);
+                Console.SetCursorPosition(cursorX + pivotX - 10, cursorY + (pivotY + 5));
                 Console.Write("공격력");
-                Console.SetCursorPosition(cursorX+4, cursorY);
+
+                Console.SetCursorPosition(cursorX + pivotX + 4, cursorY + (pivotY + 5));
                 Console.Write("체  력");
 
-                cursorY += 1;
-                Console.SetCursorPosition(cursorX-7, cursorY);
+                Console.SetCursorPosition(cursorX + pivotX - 7, cursorY + (pivotY + 6));
                 Console.Write(cloneDeck[i].StatusAttack);
-                Console.SetCursorPosition(cursorX+6, cursorY);
+
+                Console.SetCursorPosition(cursorX + pivotX + 6, cursorY + (pivotY + 6));
                 Console.Write(cloneDeck[i].StatusHealth);
             }
         }

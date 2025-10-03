@@ -42,7 +42,7 @@ namespace RaidStrategy
         }
         public bool CheckDeath()
         {
-            if (enemies[0].StatusHealth <= 0)
+            if (enemies[0].IsAlive == false)
             {
                 enemies[0].DrawAsciiArt(true);
                 enemies.RemoveAt(0);
