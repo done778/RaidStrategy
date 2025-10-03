@@ -14,9 +14,9 @@ namespace RaidStrategy
             player = visitant;
         }
 
-        public EntranceOrder EnterEntrance()
+        public EntranceOrder EnterEntrance(bool warning)
         {
-            CommandPanelDraw();
+            CommandPanelDraw(warning);
             return InputOrder();
         }
 
@@ -28,7 +28,6 @@ namespace RaidStrategy
 
         private EntranceOrder InputOrder()
         {
-            CommandPanelDraw();
             while (true)
             {
                 var inputKey = Console.ReadKey(true);
@@ -46,7 +45,7 @@ namespace RaidStrategy
             }
         }
 
-        private void CommandPanelDraw()
+        private void CommandPanelDraw(bool warning)
         {
             GameManager.ClearCommandPanel();
 
@@ -64,6 +63,13 @@ namespace RaidStrategy
                 " ---------------------------------------- "
             };
             GameManager.DrawCenterCommandPanel(orderList);
+            if (warning)
+            {
+                Console.SetCursorPosition(GameManager.BUFFER_SIZE_WIDTH / 2 - 12, GameManager.BUFFER_SIZE_HEIGHT - 3);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("!! 덱이 비어있습니다 !!");
+                Console.ResetColor();
+            }
         }
     }
 }

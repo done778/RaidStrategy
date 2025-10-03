@@ -103,6 +103,14 @@ namespace RaidStrategy
             myDeck[changeA] = myDeck[changeB];
             myDeck[changeB] = temp;
         }
+        public bool IsEmpty()
+        {
+            for (int i = 0; i < myDeck.Length; i++)
+            {
+                if (myDeck[i] != null) {  return false; }
+            }
+            return true;
+        }
 
 
         // 덱 화면 출력

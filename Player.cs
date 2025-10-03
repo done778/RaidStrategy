@@ -60,13 +60,17 @@ namespace RaidStrategy
             while (true)
             {
                 deck.OutputVisualPanelMyDeck();
-                EntranceOrder order = entrance.EnterEntrance();
+                EntranceOrder order = entrance.EnterEntrance(deck.IsEmpty());
                 if (order == EntranceOrder.Quit)
                 { return; }
                 else
                 {
                     if (order == EntranceOrder.Enter)
                     {
+                        if (deck.IsEmpty())
+                        {
+                            continue;
+                        }
                         entrance.EnterBattleField();
                         break;
                     }
