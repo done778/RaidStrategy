@@ -11,8 +11,10 @@ namespace RaidStrategy
     {
         Ally[] inventory;
 
+
         public int Count 
         { get; private set; }
+
 
         public Inventory() {
             inventory = new Ally[GameManager.INVENTORY_CAPACITY];
@@ -23,18 +25,33 @@ namespace RaidStrategy
         }
 
         // 로비에서 인벤토리 진입 시 실행되는 메서드
-        public InventoryOrderType EnterInventory()
+        public void EnterInventory()
         {
             GameManager.ClearAllPanel();
             OutputVisualPanelInventory();
-            return InputOrder();
+            InventoryOrderType order = InputOrder();
+            switch (order)
+            {
+                case InventoryOrderType.SortAttAscending:
+                    SortInventory();
+                    break;
+                case InventoryOrderType.SortAttDescending:
+                    SortInventory();
+                    break;
+                case InventoryOrderType.SortHpAscending:
+                    SortInventory();
+                    break;
+                case InventoryOrderType.SortHpDescending:
+                    SortInventory();
+                    break;
+                case InventoryOrderType.Quit:
+                    return;
+            }
         }
-        // 인벤토리 정렬
-        public void SortInventory(InventoryOrderType type)
+        public void SortInventory()
         {
             Console.WriteLine("정렬");
         }
-        // 인벤토리에 캐릭터 추가
         public void AddAlly(Ally character)
         {
             if (Count < GameManager.INVENTORY_CAPACITY)
@@ -43,7 +60,6 @@ namespace RaidStrategy
                 Count++;
             }
         }
-        // 명령어 입력 받기
         public InventoryOrderType InputOrder()
         {
             CommandPanelDraw();
@@ -69,6 +85,7 @@ namespace RaidStrategy
                 }
             }
         }
+
         public void OutputVisualPanelInventory()
         {
             int cursorX = GameManager.BUFFER_SIZE_WIDTH / 4;

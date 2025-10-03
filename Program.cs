@@ -23,6 +23,8 @@ namespace RaidStrategy
 
             Lobby lobby = new Lobby();
             lobby.EnterLobby(player);
+
+            Console.ReadLine();
         }
     }
 }
