@@ -103,6 +103,7 @@ namespace RaidStrategy
             GameManager.ClearAllPanel();
             VisualPanelUpdate();
             level.DrawEnemy();
+            level.DrawEnemyInfo();
         }
 
         public void VisualPanelUpdate()

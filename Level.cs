@@ -62,5 +62,29 @@ namespace RaidStrategy
         {
             return enemies[0];
         }
+        public void DrawEnemyInfo()
+        {
+            string[] template = {
+                " ---------------------------------------------- ",
+                "|                                              |",
+                "|                                              |",
+                "|         공격력                체  력         |",
+                "|                                              |",
+                " ---------------------------------------------- "
+            };
+            int cursorX = (GameManager.BUFFER_SIZE_WIDTH - template[0].Length) / 2;
+            for (int i = 0; i < template.Length; i++) 
+            {
+                Console.SetCursorPosition(cursorX, i + 2);
+                Console.Write(template[i]);
+            }
+            cursorX = (GameManager.BUFFER_SIZE_WIDTH / 2);
+            Console.SetCursorPosition(cursorX - enemies[0].Name.Length, 3);
+            Console.Write(enemies[0].Name);
+            Console.SetCursorPosition(cursorX - (template[0].Length / 4 - 1), 6);
+            Console.Write(enemies[0].StatusAttack);
+            Console.SetCursorPosition(cursorX + (template[0].Length / 4 - 2), 6);
+            Console.Write(enemies[0].StatusHealth);
+        }
     }
 }
