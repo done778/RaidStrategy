@@ -11,6 +11,7 @@ namespace RaidStrategy
         {
             InitLevel(level);
         }
+        // level 값에 따라 몬스터들을 인스턴스화 하여 리스트에 담습니다.
         private void InitLevel(int level)
         {
             enemies = new List<Enemy>();
@@ -34,58 +35,22 @@ namespace RaidStrategy
                     break;
             }
         }
-        public void DrawEnemy()
-        {
-            if (enemies.Count > 0)
-            {
-                enemies[0].DrawAsciiArt();
-            }
-        }
-        public bool CheckDeath()
-        {
-            if (enemies[0].IsAlive == false)
-            {
-                enemies[0].DrawAsciiArt(true);
-                enemies.RemoveAt(0);
-                return true;
-            }
-            return false;
-        }
+
+        // 현재 남은 적의 수를 반환
         public int GetRemainEnemy()
         {
             return enemies.Count;
         }
-        public string ExecuteAttack(Character target)
-        {
-            return enemies[0].Attack(target);
-        }
-        public Character GetCurrentEnemy()
+
+        // 현재 상대중인 적(맨 앞에 있는 적) 반환
+        public Enemy GetCurrentEnemy()
         {
             return enemies[0];
         }
-        public void DrawEnemyInfo()
+        
+        public void removeEnemy()
         {
-            string[] template = {
-                " ---------------------------------------------- ",
-                "|                                              |",
-                "|                                              |",
-                "|         공격력                체  력         |",
-                "|                                              |",
-                " ---------------------------------------------- "
-            };
-            int cursorX = (GameManager.BUFFER_SIZE_WIDTH - template[0].Length) / 2;
-            for (int i = 0; i < template.Length; i++) 
-            {
-                Console.SetCursorPosition(cursorX, i + 2);
-                Console.Write(template[i]);
-            }
-            cursorX = (GameManager.BUFFER_SIZE_WIDTH / 2);
-            Console.SetCursorPosition(cursorX - enemies[0].Name.Length, 3);
-            Console.Write(enemies[0].Name);
-            Console.SetCursorPosition(cursorX - (template[0].Length / 4 - 1), 6);
-            Console.Write(enemies[0].StatusAttack);
-            Console.SetCursorPosition(cursorX + (template[0].Length / 4 - 2), 6);
-            Console.Write(enemies[0].StatusHealth);
+            enemies.RemoveAt(0);
         }
     }
 }

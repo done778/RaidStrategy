@@ -7,118 +7,145 @@ namespace RaidStrategy
     // BattleField의 역할 : 콘솔을 업데이트 하는 역할
     class BattleField
     {
-        static int interval = GameManager.BUFFER_SIZE_WIDTH / 3 * 2 / 4; // 40
-        static int cursorY = GameManager.HORIZON_AREA / 4;
-        static int cursorX = (GameManager.BUFFER_SIZE_WIDTH / 3 * 2) + 3;
-        Player Player { get; set; }
-        List<Ally> cloneDeck;
-        Level level;
-        BattleManager battleManager;
-        public BattleField(Player player, Ally[] deck)
-        {
-            Player = player;
-            level = new Level(Player.ClearLevel + 1);
-            InitCloneDeck(deck);
-            battleManager = new BattleManager();
-            battleManager.SkillEventRegister(cloneDeck);
-        }
-        private void InitCloneDeck(Ally[] deck)
-        {
-            cloneDeck = new List<Ally>(GameManager.DECK_CAPACITY);
-            for (int i = 0; i < deck.Length; i++)
-            {
-                if (deck[i] != null)
-                {
-                    cloneDeck.Add(deck[i].GetClone());
-                }
-            }
-        }
+        int interval;
+        int cursorY;
+        int cursorX;
 
-        public bool StartBattle()
+        // 콘솔에 그림을 그릴 위치의 기준 초기화
+        public BattleField()
         {
-            PanelUpdate();
-            ShowStartMessage();
-            EnterToNextAction();
-            bool EndBattle = false; // 전투 종료 여부
-            bool isVictory = false; // 전투 승리 or 패배 여부
-            while (!EndBattle) // 전투가 종료될 때까지 반복
-            {
-                EndBattle = ExecuteOneTurn();
-                EnterToNextAction();
-            }
-
-            if (level.GetRemainEnemy() == 0)
-            {
-                isVictory = true;
-            }
-            return isVictory; 
+            interval = GameManager.BUFFER_SIZE_WIDTH / 3 * 2 / 4; // 40
+            cursorY = GameManager.HORIZON_AREA / 4;
+            cursorX = (GameManager.BUFFER_SIZE_WIDTH / 3 * 2) + 3;
         }
-
-        private bool ExecuteOneTurn()
+        
+        // 패널 아래 부분에 로그를 출력합니다.
+        public void ShowLog(string[] log)
         {
-            PanelUpdate();
-            battleManager.OnTurnStart?.Invoke(null);
-            combatInteraction();
-            battleManager.OnTakenDamage?.Invoke(null);
-            if (level.CheckDeath())
-            {
-                if (level.GetRemainEnemy() == 0) // 남은 적이 없다면 전투 종료
-                {
-                    return true;
-                }
-            }
-            for (int i = 0; i < cloneDeck.Count; i++)
-            {
-                if (cloneDeck[i].IsAlive == false)
-                {
-                    cloneDeck[i].DrawingDeath(cursorX + 7 - (interval * (i + 1)), cursorY + 1);
-                    cloneDeck.RemoveAt(i);
-                }
-            }
-            battleManager.OnTurnPreEnd?.Invoke(null);
-            return false;
-        }
-
-        private void combatInteraction()
-        {
-            string[] log = {
-                cloneDeck[0].Attack(level.GetCurrentEnemy()),
-                level.ExecuteAttack(cloneDeck[0])
-            };
-            PanelUpdate();
             GameManager.DrawCenterCommandPanel(log);
         }
 
-        private void EnterToNextAction()
+        // 패널 업데이트, 전장을 그리고, 현재 아군 캐릭터와, 적을 그립니다.
+        public void PanelUpdate(List<Ally> allies, Enemy enemy, string[] log = null)
         {
-            while(true)
+            GameManager.ClearAllPanel();
+            DrawBattleField();
+            DrawCharacter(allies);
+            DrawEnemy(enemy);
+            if (log != null) 
             {
-                var inputKey = Console.ReadKey();
-                if (inputKey.Key == ConsoleKey.Enter)
-                {
-                    return;
-                }
+                ShowLog(log);
             }
         }
 
-        private void ShowStartMessage()
+        // 아군 캐릭터를 모두 그립니다.
+        public void DrawCharacter(List<Ally> allies)
         {
-            string[] msg = { 
-                "엔터 키를 누를 때마다 한 턴씩 전투가 진행 됩니다.", 
-                "     전투를 시작하려면 엔터 키를 눌러주세요.     " 
+            for (int i = 0; i < allies.Count; i++) 
+            {
+                allies[i].DrawAsciiArt(cursorX + 7 - (interval * (i + 1)), cursorY + 1, false);
+
+                int pivotX = (interval / 2) - (interval * (i + 1));
+                int pivotY = GameManager.HORIZON_AREA / 2;
+
+                Console.SetCursorPosition(cursorX + pivotX - allies[i].Name.Length, cursorY + (pivotY + 3));
+                Console.Write(allies[i].Name);
+
+                Console.SetCursorPosition(cursorX + pivotX - 10, cursorY + (pivotY + 5));
+                Console.Write("공격력");
+
+                Console.SetCursorPosition(cursorX + pivotX + 4, cursorY + (pivotY + 5));
+                Console.Write("체  력");
+
+                Console.SetCursorPosition(cursorX + pivotX - 7, cursorY + (pivotY + 6));
+                Console.Write(allies[i].StatusAttack);
+
+                Console.SetCursorPosition(cursorX + pivotX + 6, cursorY + (pivotY + 6));
+                Console.Write(allies[i].StatusHealth);
+            }
+        }
+
+        // 아군 캐릭터의 죽는 애니메이션을 그립니다.
+        // 매개 변수는 어느 위치에 그릴지 결정합니다.
+        public void DrawDeathAlly(int index)
+        {
+            int startX = cursorX + 7 - (interval * (index + 1));
+            int startY = cursorY + 1;
+            string[] drawAscii =
+            {
+                "                                ",
+                "                                ",
+                "                                ",
+                "                                ",
+                "                                ",
+                "                                ",
+                "                   :%%**%#-     ",
+                "                  *%:    :*+    ",
+                "                  #-      =*:   ",
+                "             .-%= *%     :*+    ",
+                "          .#@#.    :%@+*%#-     ",
+                "        .*%-          .         ",
+                "       .#*.          %+         ",
+                "       .*..#####:.   %*         ",
+                "     .=#: ....:+%-   +@         ",
+                "    .:*=.   ..+%-.   =@.        ",
+                "  -=+*%-    .##:.    .@-.       ",
+                " .:-:       .-:.      --.       ",
+                "                                "
             };
-            GameManager.DrawCenterCommandPanel(msg);
+            Console.ForegroundColor = ConsoleColor.Red;
+            for (int i = 0; i < drawAscii.Length; i++)
+            {
+                Console.SetCursorPosition(startX, startY + i);
+                Console.Write(drawAscii[i]);
+            }
+            Console.ResetColor();
+            for (int i = 0; i < drawAscii.Length; i++)
+            {
+                Console.SetCursorPosition(startX, startY + i);
+                for (int j = 0; j < drawAscii[0].Length; j++)
+                {
+                    Console.Write(" ");
+                }
+                Thread.Sleep(50);
+            }
         }
 
-        public void PanelUpdate()
+        // 적 캐릭터를 그립니다. Death 변수가 true면 죽는 애니메이션으로 바뀝니다.
+        public void DrawEnemy(Enemy enemy, bool Death = false)
         {
-            GameManager.ClearAllPanel();
-            VisualPanelUpdate();
-            level.DrawEnemy();
-            level.DrawEnemyInfo();
+            enemy.DrawAsciiArt(Death);
+            if (!Death) { DrawEnemyInfo(enemy); }
         }
 
-        public void VisualPanelUpdate()
+        // 적 정보를 그립니다.
+        public void DrawEnemyInfo(Enemy enemy)
+        {
+            string[] template = {
+                " ---------------------------------------------- ",
+                "|                                              |",
+                "|                                              |",
+                "|         공격력                체  력         |",
+                "|                                              |",
+                " ---------------------------------------------- "
+            };
+            int cursorX = (GameManager.BUFFER_SIZE_WIDTH - template[0].Length) / 2;
+            for (int i = 0; i < template.Length; i++)
+            {
+                Console.SetCursorPosition(cursorX, i + 2);
+                Console.Write(template[i]);
+            }
+            cursorX = (GameManager.BUFFER_SIZE_WIDTH / 2);
+            Console.SetCursorPosition(cursorX - enemy.Name.Length, 3);
+            Console.Write(enemy.Name);
+            Console.SetCursorPosition(cursorX - (template[0].Length / 4 - 1), 6);
+            Console.Write(enemy.StatusAttack);
+            Console.SetCursorPosition(cursorX + (template[0].Length / 4 - 2), 6);
+            Console.Write(enemy.StatusHealth);
+        }
+
+        // 전장의 틀을 그립니다.
+        public void DrawBattleField()
         {
             Console.SetCursorPosition(1, cursorY - 1);
             for (int i = 0; i < GameManager.BUFFER_SIZE_WIDTH / 3; i++)
@@ -130,30 +157,16 @@ namespace RaidStrategy
             {
                 Console.Write("- ");
             }
-            int interval = GameManager.BUFFER_SIZE_WIDTH / 3 * 2 / 4; // 40
+        }
 
-            for (int i = 0; i < cloneDeck.Count; i++) 
-            {
-                cloneDeck[i].DrawAsciiArt(cursorX + 7 - (interval * (i + 1)), cursorY + 1, false);
-
-                int pivotX = (interval / 2) - (interval * (i + 1));
-                int pivotY = GameManager.HORIZON_AREA / 2;
-
-                Console.SetCursorPosition(cursorX + pivotX - cloneDeck[i].Name.Length, cursorY + (pivotY + 3));
-                Console.Write(cloneDeck[i].Name);
-
-                Console.SetCursorPosition(cursorX + pivotX - 10, cursorY + (pivotY + 5));
-                Console.Write("공격력");
-
-                Console.SetCursorPosition(cursorX + pivotX + 4, cursorY + (pivotY + 5));
-                Console.Write("체  력");
-
-                Console.SetCursorPosition(cursorX + pivotX - 7, cursorY + (pivotY + 6));
-                Console.Write(cloneDeck[i].StatusAttack);
-
-                Console.SetCursorPosition(cursorX + pivotX + 6, cursorY + (pivotY + 6));
-                Console.Write(cloneDeck[i].StatusHealth);
-            }
+        // 최초 전투 시작 시 안내 메시지
+        public void ShowStartMessage()
+        {
+            string[] msg = {
+                "엔터 키를 누를 때마다 한 턴씩 전투가 진행 됩니다.",
+                "     전투를 시작하려면 엔터 키를 눌러주세요.     "
+            };
+            GameManager.DrawCenterCommandPanel(msg);
         }
     }
 }

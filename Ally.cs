@@ -81,47 +81,6 @@ namespace RaidStrategy
                 Console.ResetColor();
             }
         }
-        public void DrawingDeath(int startX, int startY)
-        {
-            string[] drawAscii =
-            {
-                "                                ",
-                "                                ",
-                "                                ",
-                "                                ",
-                "                                ",
-                "                                ",
-                "                   :%%**%#-     ",
-                "                  *%:    :*+    ",
-                "                  #-      =*:   ",
-                "             .-%= *%     :*+    ",
-                "          .#@#.    :%@+*%#-     ",
-                "        .*%-          .         ",
-                "       .#*.          %+         ",
-                "       .*..#####:.   %*         ",
-                "     .=#: ....:+%-   +@         ",
-                "    .:*=.   ..+%-.   =@.        ",
-                "  -=+*%-    .##:.    .@-.       ",
-                " .:-:       .-:.      --.       ",
-                "                                "
-            };
-            Console.ForegroundColor = ConsoleColor.Red;
-            for (int i = 0; i < drawAscii.Length; i++)
-            {
-                Console.SetCursorPosition(startX, startY + i);
-                Console.Write(drawAscii[i]);
-            }
-            Console.ResetColor();
-            for (int i = 0; i < drawAscii.Length; i++)
-            {
-                Console.SetCursorPosition(startX, startY + i);
-                for (int j = 0; j < drawAscii[0].Length; j++)
-                {
-                    Console.Write(" ");
-                }
-                Thread.Sleep(50);
-            }
-        }
     }
 
     // 8종류의 각 캐릭터들은 처음 생성시 고정된 이름과 스탯을 가진다.
@@ -202,7 +161,7 @@ namespace RaidStrategy
         }
         public void CastingSpecialAbility(Ally ally)
         {
-            // 피해를 받으면 공격력이 현재 수치의 2배가 됨.
+            StatusAttack *= 2;
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -294,7 +253,6 @@ namespace RaidStrategy
         public void CastingSpecialAbility(Ally ally)
         {
             // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
-            // 특수 능력 트리거로서 활용
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -338,9 +296,7 @@ namespace RaidStrategy
         }
         public void CastingSpecialAbility(Ally ally)
         {
-            // 적을 쓰러뜨리면 현재 공격력이 3배가 됨.
-            // 엄청난 공격력 뻥튀기, 낮은 체력.
-            // 후반에 뻥튀기된 공격력으로 적에게 원기옥 모아서 원킬을 노리는 역할
+            StatusAttack *= 3;
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -460,7 +416,5 @@ namespace RaidStrategy
             DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Oracle(); }
-
-        
     }
 }

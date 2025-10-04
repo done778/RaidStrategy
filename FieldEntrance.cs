@@ -23,8 +23,8 @@ namespace RaidStrategy
 
         public void EnterBattleField(Ally[] deck)
         {
-            BattleField battleField = new BattleField(player, deck);
-            battleField.StartBattle();
+            BattleManager battleManager = new BattleManager(player, deck);
+            battleManager.InitBattle();
         }
 
         private EntranceOrder InputOrder()
