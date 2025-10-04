@@ -7,6 +7,7 @@ namespace RaidStrategy
     {
         TurnStart, TurnPreEnd, TakenDamage, AfterAttack, AllyDown, EnemyDown, End
     }
+    // BattleManager의 역할 : 실질적인 전투 로직을 담당
     class BattleManager
     {
         public Action<Ally> OnTurnStart;
@@ -16,10 +17,9 @@ namespace RaidStrategy
         public Action<Ally> OnAllyDown;
         public Action<Ally> OnEnemyDown;
         
-
-        public void SkillEventRegister(Ally[] deck)
+        public void SkillEventRegister(List<Ally> deck)
         {
-            for (int i = 0; i < deck.Length; i++) 
+            for (int i = 0; i < deck.Count; i++) 
             {
                 if (deck[i] is ISpecialAbility)
                 {

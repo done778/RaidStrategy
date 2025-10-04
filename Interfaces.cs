@@ -5,7 +5,7 @@ namespace RaidStrategy
     interface ISpecialAbility
     {
         string[] Description { get; set; } // 특수 능력 설명
-        TimingCondition Timing {  get; set; }
+        TimingCondition Timing { get; set; }
         void CastingSpecialAbility(Ally ally); // 특수 능력 발동
     }
 }

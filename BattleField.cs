@@ -4,6 +4,7 @@ using System.Threading;
 
 namespace RaidStrategy
 {
+    // BattleField의 역할 : 콘솔을 업데이트 하는 역할
     class BattleField
     {
         static int interval = GameManager.BUFFER_SIZE_WIDTH / 3 * 2 / 4; // 40
@@ -17,8 +18,9 @@ namespace RaidStrategy
         {
             Player = player;
             level = new Level(Player.ClearLevel + 1);
-            battleManager = new BattleManager();
             InitCloneDeck(deck);
+            battleManager = new BattleManager();
+            battleManager.SkillEventRegister(cloneDeck);
         }
         private void InitCloneDeck(Ally[] deck)
         {
@@ -55,8 +57,10 @@ namespace RaidStrategy
         private bool ExecuteOneTurn()
         {
             PanelUpdate();
+            battleManager.OnTurnStart?.Invoke(null);
             combatInteraction();
-            if(level.CheckDeath())
+            battleManager.OnTakenDamage?.Invoke(null);
+            if (level.CheckDeath())
             {
                 if (level.GetRemainEnemy() == 0) // 남은 적이 없다면 전투 종료
                 {
@@ -71,6 +75,7 @@ namespace RaidStrategy
                     cloneDeck.RemoveAt(i);
                 }
             }
+            battleManager.OnTurnPreEnd?.Invoke(null);
             return false;
         }
 

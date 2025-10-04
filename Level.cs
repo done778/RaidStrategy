@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace RaidStrategy
 {
+    // Level의 역할 : 단계 별로 적들을 인스턴스화
     class Level
     {
         List<Enemy> enemies;

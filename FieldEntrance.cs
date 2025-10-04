@@ -7,6 +7,7 @@ namespace RaidStrategy
     {
         Enter, EditDeck, Quit
     }
+    // FieldEntrance 전투 진입 전 덱 재 확인 담당.
     class FieldEntrance
     {
         Player player;

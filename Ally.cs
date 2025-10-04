@@ -194,8 +194,8 @@ namespace RaidStrategy
         public Berserker() : base("광전사", 2, 15)
         {
             Description = new string[] {
-                "피해를 받으면",
-                "현재 공격력이",
+                "피해를 받으면 ",
+                "현재 공격력이 ",
                 "2 배가 됩니다."
             };
             Timing = TimingCondition.TakenDamage;
