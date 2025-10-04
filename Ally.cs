@@ -169,7 +169,7 @@ namespace RaidStrategy
                     "광전사의　공격력이　2배로　증가합니다."
                 }
                 );
-                Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+                
             }
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
@@ -221,10 +221,10 @@ namespace RaidStrategy
                 Attack(battleStatus.CurEnemy); // 적을 공격
                 GameManager.AddLogInQueue(new string[] {
                     "특수　능력　발동!",
-                    "궁사가　적에게　공격을　가합니다."
+                    $"궁사가　적에게　{StatusAttack}의　피해를　가합니다."
                 }
                 );
-                Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+                
             }
         }
 
@@ -290,7 +290,7 @@ namespace RaidStrategy
                     "격투가가　뒤의　아군에게　피해를　1　가합니다."
                 }
                 );
-                Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+                
             }
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
@@ -341,7 +341,7 @@ namespace RaidStrategy
                     "마법사의　공격력이　3배로　증가합니다."
                 }
             );
-            Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+            
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -395,7 +395,7 @@ namespace RaidStrategy
                     "학자가　맨　앞　아군의　체력을　2　증가시킵니다."
                 }
             );
-            Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+            
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -448,7 +448,7 @@ namespace RaidStrategy
                         "점술사가　모든　아군의　공격력을　2배로　증가시켰습니다."
                     }
                 );
-                Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+                
             }
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)

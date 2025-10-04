@@ -11,12 +11,7 @@ namespace RaidStrategy
     // BattleManager의 역할 : 실질적인 전투 로직을 담당
     class BattleManager
     {
-        public Action<CurrentBattleStatus> OnTurnStart;
-        public Action<CurrentBattleStatus> OnTurnPreEnd;
-        public Action<CurrentBattleStatus> OnTakenDamage;
-        public Action<CurrentBattleStatus> OnAfterAttack;
-        public Action<CurrentBattleStatus> OnAllyDown;
-        public Action<CurrentBattleStatus> OnEnemyDown;
+        public Action<CurrentBattleStatus>[] TimingActionTrigger = new Action<CurrentBattleStatus>[(int)TimingCondition.End];
 
         BattleField battleField; // UI 업데이트 담당
         Level level; // 적 관련 데이터
@@ -49,10 +44,10 @@ namespace RaidStrategy
         // 전투 첫 진입 시 실행 메서드
         public bool InitBattle()
         {
+            GameManager.ClearCommandPanel();
             battleField.PanelUpdate(cloneDeck, level.GetCurrentEnemy());
             battleField.ShowStartMessage();
             SkillEventRegister(cloneDeck);
-            GameManager.ClearCommandPanel();
             EnterToNextAction();
             return StartBattle();
         }
@@ -72,18 +67,23 @@ namespace RaidStrategy
             {
                 isVictory = true;
             }
+            battleField.DrawBattleResult(isVictory);
+            GameManager.AllDeleteQueue();
+            EnterToNextAction();
             return isVictory;
         }
 
         // 턴 한 번동안 일어나는 일들을 순서대로 실행하는 메서드
         private bool ExecuteOneTurn()
         {
+            GameManager.AddLogInQueue(new string[] { "턴을　시작하겠습니다" });
             currentAlly = cloneDeck[0];
             currentEnemy = level.GetCurrentEnemy();
             // 턴 시작 알림! 예를 들어 학자가 있으면 맨 앞 아군 체력 증가 시킴.
-            OnTurnStart?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
+            TimingActionTrigger[(int)TimingCondition.TurnStart]?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
             // 패널 업데이트.
             battleField.PanelUpdate(cloneDeck, currentEnemy);
+            Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
 
             log = combatInteraction(currentAlly, currentEnemy); // 서로 일반 공격 주고 받음
             battleField.PanelUpdate(cloneDeck, currentEnemy, log);
@@ -92,13 +92,13 @@ namespace RaidStrategy
             // 공격 후와 피해를 받은 시점이 동시에 발동한다.
             // 그럼 공격 후랑 피해 받는 시점을 왜 굳이 나눴느냐?
             // 특수 능력 중엔 아군에게 피해를 주는 효과가 있는데 이 땐 OnTakenDamage 이벤트만 발생해야한다.
-            OnAfterAttack?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, currentAlly));
+            TimingActionTrigger[(int)TimingCondition.AfterAttack]?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, currentAlly));
             battleField.PanelUpdate(cloneDeck, currentEnemy);
 
-            OnTakenDamage?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, currentAlly));
+            TimingActionTrigger[(int)TimingCondition.TakenDamage]?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, currentAlly));
             battleField.PanelUpdate(cloneDeck, currentEnemy);
             // 턴 종료 알림!
-            OnTurnPreEnd?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
+            TimingActionTrigger[(int)TimingCondition.TurnPreEnd]?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
             battleField.PanelUpdate(cloneDeck, currentEnemy);
 
             // 현재 턴 종료와 다음 턴 시작 사이에 죽은 애 체크 & 처리를 해야함.
@@ -111,7 +111,7 @@ namespace RaidStrategy
                     return true;
                 }
                 // 적이 쓰러지는 조건인 특수 능력 발동
-                OnEnemyDown?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
+                TimingActionTrigger[(int)TimingCondition.EnemyDown]?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
             }
             // 리스트 요소 삭제로 인덱스가 꼬일 수 있으므로 뒤에서 부터 체크
             for (int i = cloneDeck.Count - 1; i >= 0; i--) 
@@ -127,9 +127,13 @@ namespace RaidStrategy
 
                     // 처리가 끝났으니 덱에서 제거.
                     cloneDeck.RemoveAt(i);
-                    
+                    if (cloneDeck.Count == 0) // 남은 아군이 없다면 전투 종료
+                    {
+                        return true;
+                    }
+
                     // 아군이 쓰러지는 조건인 특수 능력 발동
-                    OnAllyDown?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
+                    TimingActionTrigger[(int)TimingCondition.AllyDown]?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
                 }
             }
             battleField.PanelUpdate(cloneDeck, currentEnemy);
@@ -169,27 +173,7 @@ namespace RaidStrategy
             {
                 if (deck[i] is ISpecialAbility)
                 {
-                    switch((deck[i] as ISpecialAbility).Timing)
-                    {
-                        case TimingCondition.TurnStart:
-                            OnTurnStart += (deck[i] as ISpecialAbility).CastingSpecialAbility;
-                            break;
-                        case TimingCondition.TurnPreEnd:
-                            OnTurnPreEnd += (deck[i] as ISpecialAbility).CastingSpecialAbility;
-                            break;
-                        case TimingCondition.TakenDamage:
-                            OnTakenDamage += (deck[i] as ISpecialAbility).CastingSpecialAbility;
-                            break;
-                        case TimingCondition.AfterAttack:
-                            OnAfterAttack += (deck[i] as ISpecialAbility).CastingSpecialAbility;
-                            break;
-                        case TimingCondition.AllyDown:
-                            OnAllyDown += (deck[i] as ISpecialAbility).CastingSpecialAbility;
-                            break;
-                        case TimingCondition.EnemyDown:
-                            OnEnemyDown += (deck[i] as ISpecialAbility).CastingSpecialAbility;
-                            break;
-                    }
+                    TimingActionTrigger[(int)(deck[i] as ISpecialAbility).Timing] += (deck[i] as ISpecialAbility).CastingSpecialAbility;
                 }
             }
         }
@@ -199,27 +183,7 @@ namespace RaidStrategy
         {
             if (ally is ISpecialAbility)
             {
-                switch ((ally as ISpecialAbility).Timing)
-                {
-                    case TimingCondition.TurnStart:
-                        OnTurnStart -= (ally as ISpecialAbility).CastingSpecialAbility;
-                        break;
-                    case TimingCondition.TurnPreEnd:
-                        OnTurnPreEnd -= (ally as ISpecialAbility).CastingSpecialAbility;
-                        break;
-                    case TimingCondition.TakenDamage:
-                        OnTakenDamage -= (ally as ISpecialAbility).CastingSpecialAbility;
-                        break;
-                    case TimingCondition.AfterAttack:
-                        OnAfterAttack -= (ally as ISpecialAbility).CastingSpecialAbility;
-                        break;
-                    case TimingCondition.AllyDown:
-                        OnAllyDown -= (ally as ISpecialAbility).CastingSpecialAbility;
-                        break;
-                    case TimingCondition.EnemyDown:
-                        OnEnemyDown -= (ally as ISpecialAbility).CastingSpecialAbility;
-                        break;
-                }
+                TimingActionTrigger[(int)(ally as ISpecialAbility).Timing] -= (ally as ISpecialAbility).CastingSpecialAbility;
             }
         }
     }

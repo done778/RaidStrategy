@@ -23,8 +23,36 @@ namespace RaidStrategy
 
         public void EnterBattleField(Ally[] deck)
         {
+            if (player.ClearLevel >= GameManager.MAX_BATTLE_LEVEL)
+            {
+                // 이미 모든 레벨을 클리어함
+                return;
+            }
             BattleManager battleManager = new BattleManager(player, deck);
-            battleManager.InitBattle();
+            bool isVictory = battleManager.InitBattle();
+            if (isVictory) 
+            { 
+                player.ClearLevel++; 
+                switch (player.ClearLevel)
+                {
+                    case 1:
+                        player.TakeReward(new Berserker());
+                        player.TakeReward(new Boxer());
+                        break;
+                    case 2:
+                        player.TakeReward(new Fighter());
+                        player.TakeReward(new Oracle());
+                        break;
+                    case 3:
+                        player.TakeReward(new Magician());
+                        break;
+                    case 4:
+                        GameManager.DrawCenterCommandPanel(new string[] { "모든 레벨을 클리어 했습니다." });
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         private EntranceOrder InputOrder()

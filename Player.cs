@@ -81,6 +81,10 @@ namespace RaidStrategy
                 }
             }  
         }
+        public void TakeReward(Ally ally)
+        {
+            inventory.AddAlly(ally);
+        }
 
         public void DeckChangeUI()
         {
