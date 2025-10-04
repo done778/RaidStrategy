@@ -190,6 +190,7 @@ namespace RaidStrategy
     class Berserker : Ally, ISpecialAbility
     {
         public string[] Description { get; set; }
+        public TimingCondition Timing { get; set;}
         public Berserker() : base("광전사", 2, 15)
         {
             Description = new string[] {
@@ -197,14 +198,11 @@ namespace RaidStrategy
                 "현재 공격력이",
                 "2 배가 됩니다."
             };
+            Timing = TimingCondition.TakenDamage;
         }
-        public void CastingSpecialAbility()
+        public void CastingSpecialAbility(Ally ally)
         {
             // 피해를 받으면 공격력이 현재 수치의 2배가 됨.
-        }
-        public void CheckTriggerCondition()
-        {
-
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -232,25 +230,25 @@ namespace RaidStrategy
             DrawingImage(startX, startY, drawAscii, Info);
         }
         public override Ally GetClone() { return new Berserker(); }
+
+        
     }
     class Archer : Ally, ISpecialAbility
     {
+        public TimingCondition Timing { get; set;}
         public string[] Description { get; set; }
         public Archer() : base("궁사", 6, 5)
         {
             Description = new string[] {
-                "현재 위치가",
-                "맨 앞이 아닐 경우",
-                "지원 사격을 합니다."
+                "턴 종료 전 현재 위치가",
+                "   맨 앞이 아닐 경우  ",
+                "  지원 사격을 합니다. "
             };
+            Timing = TimingCondition.TurnPreEnd;
         }
-        public void CastingSpecialAbility()
+        public void CastingSpecialAbility(Ally ally)
         {
             // 맨 앞에 있지 않으면 지원 공격을 함.
-        }
-        public void CheckTriggerCondition()
-        {
-
         }
 
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
@@ -282,23 +280,21 @@ namespace RaidStrategy
     }
     class Boxer : Ally, ISpecialAbility
     {
+        public TimingCondition Timing { get; set;}
         public string[] Description { get; set; }
         public Boxer() : base("격투가", 7, 7)
         {
             Description = new string[] {
-                "공격 후",
+                "      공격 후     ",
                 "자신 뒤의 아군에게",
-                "피해를 1 줍니다."
+                " 피해를 1 줍니다. "
             };
+            Timing = TimingCondition.AfterAttack;
         }
-        public void CastingSpecialAbility()
+        public void CastingSpecialAbility(Ally ally)
         {
             // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
             // 특수 능력 트리거로서 활용
-        }
-        public void CheckTriggerCondition()
-        {
-
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -329,24 +325,22 @@ namespace RaidStrategy
     }
     class Magician : Ally, ISpecialAbility
     {
+        public TimingCondition Timing { get; set;}
         public string[] Description { get; set; }
         public Magician() : base("마법사", 12, 2)
         {
             Description = new string[] {
-                "적이 쓰러지면",
-                "현재 공격력이",
-                "3 배가 됩니다."
+                "    적이 쓰러지면   ",
+                "자신의 현재 공격력이",
+                "   3 배가 됩니다.   "
             };
+            Timing = TimingCondition.EnemyDown;
         }
-        public void CastingSpecialAbility()
+        public void CastingSpecialAbility(Ally ally)
         {
             // 적을 쓰러뜨리면 현재 공격력이 3배가 됨.
             // 엄청난 공격력 뻥튀기, 낮은 체력.
             // 후반에 뻥튀기된 공격력으로 적에게 원기옥 모아서 원킬을 노리는 역할
-        }
-        public void CheckTriggerCondition()
-        {
-
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -379,22 +373,20 @@ namespace RaidStrategy
     }
     class Scholar : Ally, ISpecialAbility
     {
+        public TimingCondition Timing { get; set;}
         public string[] Description { get; set; }
         public Scholar() : base("학자", 4, 8)
         {
             Description = new string[] {
-                "매 턴마다",
-                "맨 앞의 아군을",
-                "2 만큼 회복시킵니다."
+                "  매 턴 시작마다   ",
+                "맨 앞의 아군 체력을",
+                "  2 증가시킵니다.  "
             };
+            Timing = TimingCondition.TurnStart;
         }
-        public void CastingSpecialAbility()
+        public void CastingSpecialAbility(Ally ally)
         {
             // 매 턴 맨 앞에 위치한 아군의 체력 +2
-        }
-        public void CheckTriggerCondition()
-        {
-
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -426,22 +418,20 @@ namespace RaidStrategy
     }
     class Oracle : Ally, ISpecialAbility
     {
+        public TimingCondition Timing { get; set;}
         public string[] Description { get; set; }
         public Oracle() : base("점술사", 2, 8)
         {
             Description = new string[] {
-                "아군이 쓰러지면",
+                "   아군이 쓰러지면  ",
                 "모든 아군의 공격력이",
-                "2 배가 됩니다."
+                "   2 배가 됩니다.   "
             };
+            Timing = TimingCondition.AllyDown;
         }
-        public void CastingSpecialAbility()
+        public void CastingSpecialAbility(Ally ally)
         {
             // 아군이 쓰러지면
-        }
-        public void CheckTriggerCondition()
-        {
-            
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {

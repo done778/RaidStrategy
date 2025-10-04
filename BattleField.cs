@@ -12,12 +12,19 @@ namespace RaidStrategy
         Player Player { get; set; }
         List<Ally> cloneDeck;
         Level level;
+        BattleManager battleManager;
         public BattleField(Player player, Ally[] deck)
         {
             Player = player;
             level = new Level(Player.ClearLevel + 1);
+            battleManager = new BattleManager();
+            InitCloneDeck(deck);
+        }
+        private void InitCloneDeck(Ally[] deck)
+        {
             cloneDeck = new List<Ally>(GameManager.DECK_CAPACITY);
-            for (int i = 0; i < deck.Length; i++) {
+            for (int i = 0; i < deck.Length; i++)
+            {
                 if (deck[i] != null)
                 {
                     cloneDeck.Add(deck[i].GetClone());
