@@ -164,10 +164,9 @@ namespace RaidStrategy
             if (battleStatus.Target.Equals(this))
             {
                 StatusAttack *= 2;
-                GameManager.ClearCommandPanel();
-                GameManager.DrawCenterCommandPanel(new string[] {
-                    "          특수 능력 발동!          ",
-                    "광전사의 공격력이 2배로 증가합니다."
+                GameManager.AddLogInQueue(new string[] {
+                    "특수　능력　발동!",
+                    "광전사의　공격력이　2배로　증가합니다."
                 }
                 );
                 Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
@@ -220,10 +219,9 @@ namespace RaidStrategy
             if(!battleStatus.Allies[0].Equals(this)) // 맨 앞이 본인이 아니라면
             {
                 Attack(battleStatus.CurEnemy); // 적을 공격
-                GameManager.ClearCommandPanel();
-                GameManager.DrawCenterCommandPanel(new string[] {
-                    "       특수 능력 발동!        ",
-                    "궁사가 적에게 공격을 가합니다."
+                GameManager.AddLogInQueue(new string[] {
+                    "특수　능력　발동!",
+                    "궁사가　적에게　공격을　가합니다."
                 }
                 );
                 Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
@@ -287,10 +285,9 @@ namespace RaidStrategy
             else
             {
                 battleStatus.Allies[index + 1].TakeDamage(1);
-                GameManager.ClearCommandPanel();
-                GameManager.DrawCenterCommandPanel(new string[] {
-                    "             특수 능력 발동!             ",
-                    "격투가가 뒤의 아군에게 피해를 1 가합니다."
+                GameManager.AddLogInQueue(new string[] {
+                    "특수　능력　발동!",
+                    "격투가가　뒤의　아군에게　피해를　1　가합니다."
                 }
                 );
                 Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
@@ -339,10 +336,9 @@ namespace RaidStrategy
         public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
             StatusAttack *= 3;
-            GameManager.ClearCommandPanel();
-            GameManager.DrawCenterCommandPanel(new string[] {
-                    "          특수 능력 발동!          ",
-                    "마법사의 공격력이 3배로 증가합니다."
+            GameManager.AddLogInQueue(new string[] {
+                    "특수　능력　발동!",
+                    "마법사의　공격력이　3배로　증가합니다."
                 }
             );
             Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
@@ -394,10 +390,9 @@ namespace RaidStrategy
         public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
             battleStatus.Allies[0].TakeHeal(HealPower);
-            GameManager.ClearCommandPanel();
-            GameManager.DrawCenterCommandPanel(new string[] {
-                    "               특수 능력 발동!              ",
-                    "학자가 맨 앞 아군의 체력을 2 증가시켰습니다."
+            GameManager.AddLogInQueue(new string[] {
+                    "특수　능력　발동!",
+                    "학자가　맨　앞　아군의　체력을　2　증가시킵니다."
                 }
             );
             Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
@@ -448,10 +443,9 @@ namespace RaidStrategy
             for (int i = 0; i < battleStatus.Allies.Count; i++) 
             {
                 battleStatus.Allies[i].TakeBuff(battleStatus.Allies[i].StatusAttack);
-                GameManager.ClearCommandPanel();
-                GameManager.DrawCenterCommandPanel(new string[] {
-                        "                  특수 능력 발동!                  ",
-                        "점술사가 모든 아군의 공격력을 2배로 증가시켰습니다."
+                GameManager.AddLogInQueue(new string[] {
+                        "특수　능력　발동!",
+                        "점술사가　모든　아군의　공격력을　2배로　증가시켰습니다."
                     }
                 );
                 Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);

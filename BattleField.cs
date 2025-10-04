@@ -22,14 +22,13 @@ namespace RaidStrategy
         // 패널 업데이트, 전장을 그리고, 현재 아군 캐릭터와, 적을 그립니다.
         public void PanelUpdate(List<Ally> allies, Enemy enemy, string[] log = null)
         {
-            GameManager.ClearAllPanel();
+            GameManager.ClearVisualPanel();
             DrawBattleField();
             DrawCharacter(allies);
             DrawEnemy(enemy);
             if (log != null) 
             {
-                GameManager.ClearCommandPanel();
-                GameManager.DrawCenterCommandPanel(log);
+                GameManager.AddLogInQueue(log);
             }
         }
 
@@ -50,7 +49,7 @@ namespace RaidStrategy
                 Console.Write("공격력");
 
                 Console.SetCursorPosition(cursorX + pivotX + 4, cursorY + (pivotY + 5));
-                Console.Write("체  력");
+                Console.Write("체　력");
 
                 Console.SetCursorPosition(cursorX + pivotX - 7, cursorY + (pivotY + 6));
                 Console.Write(allies[i].StatusAttack);
@@ -158,8 +157,8 @@ namespace RaidStrategy
         public void ShowStartMessage()
         {
             string[] msg = {
-                "엔터 키를 누를 때마다 한 턴씩 전투가 진행 됩니다.",
-                "     전투를 시작하려면 엔터 키를 눌러주세요.     "
+                "엔터키를　누를　때마다　한턴씩　전투가　진행됩니다",
+                "　　　전투를　시작하려면　엔터키를　눌러주세요　　"
             };
             GameManager.DrawCenterCommandPanel(msg);
         }

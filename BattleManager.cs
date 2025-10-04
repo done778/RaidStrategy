@@ -52,6 +52,7 @@ namespace RaidStrategy
             battleField.PanelUpdate(cloneDeck, level.GetCurrentEnemy());
             battleField.ShowStartMessage();
             SkillEventRegister(cloneDeck);
+            GameManager.ClearCommandPanel();
             EnterToNextAction();
             return StartBattle();
         }
@@ -132,6 +133,7 @@ namespace RaidStrategy
                 }
             }
             battleField.PanelUpdate(cloneDeck, currentEnemy);
+            GameManager.AddLogInQueue(new string[] { "턴이　종료되었습니다", "엔터를　눌러주세요" });
 
             return false;
         }
