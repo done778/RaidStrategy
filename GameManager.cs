@@ -11,7 +11,7 @@ namespace RaidStrategy
         public const int HORIZON_AREA = 40;
         public const int INVENTORY_CAPACITY = 8;
         public const int DECK_CAPACITY = 4;
-        public const int BATTLE_INTERVAL_TIME = 2000;
+        public const int BATTLE_INTERVAL_TIME = 1500;
         public const int MAX_BATTLE_LEVEL = 4;
         public const int LOG_QUEUE_CAPACITY = 16;
         private static Queue<string> LOG_QUEUE2 = new Queue<string>(LOG_QUEUE_CAPACITY);
@@ -91,7 +91,7 @@ namespace RaidStrategy
             LOG_QUEUE2.Enqueue("ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
             OutputLogQueue();
         }
-        // 로그 출력
+        // 큐에 담긴 로그 출력
         public static void OutputLogQueue()
         {
             int cursorX = BUFFER_SIZE_WIDTH / 2;
@@ -104,7 +104,7 @@ namespace RaidStrategy
                 Console.Write(str);
             }
         }
-    
+        // 큐 비우기
         public static void AllDeleteQueue()
         {
             LOG_QUEUE2.Clear();

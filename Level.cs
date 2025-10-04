@@ -18,7 +18,7 @@ namespace RaidStrategy
             switch (level) 
             {
                 case 1:
-                    enemies.Add(new Slime(3, 20));
+                    enemies.Add(new Slime(5, 65));
                     break;
                 case 2:
                     enemies.Add(new GreenMushroom(4, 15));

@@ -83,11 +83,15 @@ namespace RaidStrategy
         }
     }
 
+
+
+
+
     // 8종류의 각 캐릭터들은 처음 생성시 고정된 이름과 스탯을 가진다.
     class SwordMan : Ally
     {
         // 기본 스탯이 높은 탱커
-        public SwordMan() : base("검사", 5, 12) { }
+        public SwordMan() : base("검사", 5, 13) { }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
             string[] drawAscii = {
@@ -115,95 +119,14 @@ namespace RaidStrategy
         }
         public override Ally GetClone() { return new SwordMan(); }
     }
-    class Fighter : Ally
-    {
-        // 기본 스탯이 높은 딜러
-        public Fighter() : base("싸움꾼", 10, 8) { }
-        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
-        {
-            string[] drawAscii = {
-                "                                ",
-                "            ..-=-:.             ",
-                "           .#*-:-=#+.           ",
-                "          .@=     .#=           ",
-                "          .@.      #*           ",
-                "           -%:   .+@:           ",
-                "         .:%@@@%%#-..           ",
-                "      .#@%:.#%#+.               ",
-                "   -%*#=.  =% .**.              ",
-                "  .=@%%-  :@:   .=#@@@@.        ",
-                "   :#*:#@@+..                   ",
-                "    .=%*:.:#@%=:...             ",
-                "       :#@+: ..-*%%#=::.        ",
-                "        .:-%%+:.    :-%%%*-..   ",
-                "       .*%. .-#%#=:..    .++.   ",
-                "      .##.    .=+-*#%*-:.:*+.   ",
-                "    .-#*.     .+#:   .-*##+.    ",
-                "  .=#*-.      .-=.              ",
-                "                                "
-            };
-            DrawingImage(startX, startY, drawAscii, Info);
-        }
-        public override Ally GetClone() { return new Fighter(); }
-    }
-    class Berserker : Ally, ISpecialAbility
-    {
-        public string[] Description { get; set; }
-        public TimingCondition Timing { get; set;}
-        public Berserker() : base("광전사", 2, 15)
-        {
-            Description = new string[] {
-                "피해를 받으면 ",
-                "현재 공격력이 ",
-                "2 배가 됩니다."
-            };
-            Timing = TimingCondition.TakenDamage;
-        }
-        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
-        {
-            if (battleStatus.Target.Equals(this))
-            {
-                StatusAttack *= 2;
-                GameManager.AddLogInQueue(new string[] {
-                    "특수　능력　발동!",
-                    "광전사의　공격력이　2배로　증가합니다."
-                }
-                );
-                
-            }
-        }
-        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
-        {
-            string[] drawAscii = {
-                "                     .%%:       ",
-                "                     %@:        ",
-                "            ..:::.. #@-         ",
-                "           .##---*#::- ..-+#+.  ",
-                "          .@:     :%: .++*@*:.  ",
-                "          :%       #- -#%+:.    ",
-                "          .%#.   .+#. ::.       ",
-                "          ..:#%%%%-...%.        ",
-                "         .@* .-*-   :@:         ",
-                "        .%* .%@%-  :@.          ",
-                "       .#+.:@@@*. :%:           ",
-                "      .#=.   .-* -%-.           ",
-                "     :#+.   .=@+-#-.            ",
-                "    :*+.   .##:-#=.             ",
-                "   :*+.   -@+.:#+:+:.           ",
-                " .:#+.   -@-.:#+  +%:           ",
-                " .:#:   :@=.:#+    ##.          ",
-                "  :*+   .--*#+      %+          ",
-                "  .+#:=*#*=.        +@.         "
-            };
-            DrawingImage(startX, startY, drawAscii, Info);
-        }
-        public override Ally GetClone() { return new Berserker(); }
 
-        
-    }
+
+
+
+
     class Archer : Ally, ISpecialAbility
     {
-        public TimingCondition Timing { get; set;}
+        public TimingCondition Timing { get; set; }
         public string[] Description { get; set; }
         public Archer() : base("궁사", 6, 5)
         {
@@ -216,7 +139,7 @@ namespace RaidStrategy
         }
         public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
-            if(!battleStatus.Allies[0].Equals(this)) // 맨 앞이 본인이 아니라면
+            if (!battleStatus.Allies[0].Equals(this)) // 맨 앞이 본인이 아니라면
             {
                 Attack(battleStatus.CurEnemy); // 적을 공격
                 GameManager.AddLogInQueue(new string[] {
@@ -224,7 +147,6 @@ namespace RaidStrategy
                     $"궁사가　적에게　{StatusAttack}의　피해를　가합니다."
                 }
                 );
-                
             }
         }
 
@@ -255,42 +177,155 @@ namespace RaidStrategy
         }
         public override Ally GetClone() { return new Archer(); }
     }
+
+
+
+
+
+    class Scholar : Ally, ISpecialAbility
+    {
+        int HealPower;
+        public TimingCondition Timing { get; set; }
+        public string[] Description { get; set; }
+        public Scholar() : base("학자", 4, 6)
+        {
+            Description = new string[] {
+                "  매 턴 시작마다   ",
+                "맨 앞의 아군 체력을",
+                "  2 증가시킵니다.  "
+            };
+            Timing = TimingCondition.TurnStart;
+            HealPower = 2;
+        }
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
+        {
+            battleStatus.Allies[0].TakeHeal(HealPower);
+            GameManager.AddLogInQueue(new string[] {
+                    "특수　능력　발동!",
+                    "학자가　맨　앞　아군의　체력을　2　증가시킵니다."
+                }
+            );
+
+        }
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
+        {
+            string[] drawAscii =
+            {
+                "         .:+**+-.               ",
+                "        :#+: .:*#-.             ",
+                "       .#-.     +*:             ",
+                "       .#=.     +*.             ",
+                "        :%*: .:+*:.             ",
+                "         .:-++-:.        .:--.  ",
+                "        .=..:%@@@%%#-..:%@@@@#: ",
+                "      .*@-..+#:::=%@@@%@+:::#=. ",
+                "    .*@=.  :@:       *@.   =*:  ",
+                "   .+*.    *%        @:   :#=.  ",
+                "    .+@=. .@        #%    =*:   ",
+                "      ... +%        %:   :#=    ",
+                "         .@.......:%@#@@@@#:    ",
+                "         +%:::=+#@@@@=.         ",
+                "         .:  ...                ",
+                "        :%#  .-%*..             ",
+                "      .=%=.    .+%=..           ",
+                "   .:+%#:.       .#=.           ",
+                " .=%*-.           =@:           "
+            };
+            DrawingImage(startX, startY, drawAscii, Info);
+        }
+        public override Ally GetClone() { return new Scholar(); }
+    }
+
+
+
+
+
+    class Berserker : Ally, ISpecialAbility
+    {
+        public string[] Description { get; set; }
+        public TimingCondition Timing { get; set; }
+        public Berserker() : base("광전사", 2, 15)
+        {
+            Description = new string[] {
+                "피해를 받으면 ",
+                "현재 공격력이 ",
+                "2 배가 됩니다."
+            };
+            Timing = TimingCondition.TakenDamage;
+        }
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
+        {
+            if (battleStatus.Target.Equals(this))
+            {
+                StatusAttack *= 2;
+                GameManager.AddLogInQueue(new string[] {
+                    "특수　능력　발동!",
+                    "광전사의　공격력이　2배로　증가합니다."
+                }
+                );
+
+            }
+        }
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
+        {
+            string[] drawAscii = {
+                "                     .%%:       ",
+                "                     %@:        ",
+                "            ..:::.. #@-         ",
+                "           .##---*#::- ..-+#+.  ",
+                "          .@:     :%: .++*@*:.  ",
+                "          :%       #- -#%+:.    ",
+                "          .%#.   .+#. ::.       ",
+                "          ..:#%%%%-...%.        ",
+                "         .@* .-*-   :@:         ",
+                "        .%* .%@%-  :@.          ",
+                "       .#+.:@@@*. :%:           ",
+                "      .#=.   .-* -%-.           ",
+                "     :#+.   .=@+-#-.            ",
+                "    :*+.   .##:-#=.             ",
+                "   :*+.   -@+.:#+:+:.           ",
+                " .:#+.   -@-.:#+  +%:           ",
+                " .:#:   :@=.:#+    ##.          ",
+                "  :*+   .--*#+      %+          ",
+                "  .+#:=*#*=.        +@.         "
+            };
+            DrawingImage(startX, startY, drawAscii, Info);
+        }
+        public override Ally GetClone() { return new Berserker(); }
+
+
+    }
+
+
+
+
+
     class Boxer : Ally, ISpecialAbility
     {
-        public TimingCondition Timing { get; set;}
+        public TimingCondition Timing { get; set; }
         public string[] Description { get; set; }
         public Boxer() : base("격투가", 7, 7)
         {
             Description = new string[] {
-                "      공격 후     ",
-                "자신 뒤의 아군에게",
-                " 피해를 1 줍니다. "
+                "    자신이 쓰러지면    ",
+                "      모든 아군의      ",
+                " 공격력이 3배가 됩니다 "
             };
-            Timing = TimingCondition.AfterAttack;
+            Timing = TimingCondition.AllyDown;
         }
         public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
-            int index = 0; ; // 내 위치를 먼저 찾자.
-            for (int i = 0; battleStatus.Allies.Count > 0; i++) {
-                if(battleStatus.Allies[i].Equals(this))
+            if (battleStatus.Target.Equals(this))
+            {
+                for (int i = 0; i < battleStatus.Allies.Count; i++)
                 {
-                    index = i; 
-                    break;
+                    battleStatus.Allies[i].TakeBuff(battleStatus.Allies[i].StatusAttack * 2);
                 }
-            }
-            if (index + 1 >= battleStatus.Allies.Count) // 내가 맨 뒤에 있다면 효과 미발동.
-            {
-                return;
-            }
-            else
-            {
-                battleStatus.Allies[index + 1].TakeDamage(1);
                 GameManager.AddLogInQueue(new string[] {
-                    "특수　능력　발동!",
-                    "격투가가　뒤의　아군에게　피해를　1　가합니다."
-                }
+                        "특수　능력　발동!",
+                        "격투가가　모든　아군의　공격력을　3배　증가시킵니다."
+                    }
                 );
-                
             }
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
@@ -320,6 +355,126 @@ namespace RaidStrategy
         }
         public override Ally GetClone() { return new Boxer(); }
     }
+
+
+
+
+
+    class Fighter : Ally, ISpecialAbility
+    {
+
+        public string[] Description { get; set; }
+        public TimingCondition Timing { get; set; }
+        public Fighter() : base("싸움꾼", 1, 8) 
+        {
+            Description = new string[] {
+                "    공격 후 적의     ",
+                "현재 체력의 50% 만큼 ",
+                "   피해를 줍니다.    "
+            };
+            Timing = TimingCondition.AfterAttack;
+        }
+
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
+        {
+            battleStatus.CurEnemy.TakeDamage(battleStatus.CurEnemy.StatusHealth / 2);
+            GameManager.AddLogInQueue(new string[] {
+                    "특수　능력　발동!",
+                    $"싸움꾼이　적에게　{battleStatus.CurEnemy.StatusHealth / 2}의　피해를　가합니다."
+                }
+            );
+        }
+
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
+        {
+            string[] drawAscii = {
+                "                                ",
+                "            ..-=-:.             ",
+                "           .#*-:-=#+.           ",
+                "          .@=     .#=           ",
+                "          .@.      #*           ",
+                "           -%:   .+@:           ",
+                "         .:%@@@%%#-..           ",
+                "      .#@%:.#%#+.               ",
+                "   -%*#=.  =% .**.              ",
+                "  .=@%%-  :@:   .=#@@@@.        ",
+                "   :#*:#@@+..                   ",
+                "    .=%*:.:#@%=:...             ",
+                "       :#@+: ..-*%%#=::.        ",
+                "        .:-%%+:.    :-%%%*-..   ",
+                "       .*%. .-#%#=:..    .++.   ",
+                "      .##.    .=+-*#%*-:.:*+.   ",
+                "    .-#*.     .+#:   .-*##+.    ",
+                "  .=#*-.      .-=.              ",
+                "                                "
+            };
+            DrawingImage(startX, startY, drawAscii, Info);
+        }
+        public override Ally GetClone() { return new Fighter(); }
+    }
+
+
+
+
+    class Oracle : Ally, ISpecialAbility
+    {
+        public TimingCondition Timing { get; set; }
+        public string[] Description { get; set; }
+        public Oracle() : base("점술사", 2, 8)
+        {
+            Description = new string[] {
+                "   아군이 쓰러지면  ",
+                "모든 아군의 공격력이",
+                "   2 배가 됩니다.   "
+            };
+            Timing = TimingCondition.AllyDown;
+        }
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
+        {
+            for (int i = 0; i < battleStatus.Allies.Count; i++)
+            {
+                battleStatus.Allies[i].TakeBuff(battleStatus.Allies[i].StatusAttack);
+                GameManager.AddLogInQueue(new string[] {
+                        "특수　능력　발동!",
+                        "점술사가　모든　아군의　공격력을　2배로　증가시켰습니다."
+                    }
+                );
+
+            }
+        }
+        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
+        {
+            string[] drawAscii =
+            {
+                "                      =:  :==:. ",
+                "       .:==:.        :@%. .-+%: ",
+                "     .=#=--=*#:   -%@*-+%@*.=%: ",
+                "    .+*:    .-#: ::.#%++%- =*:. ",
+                "    .*+.    .-%-:#=.%#:=%*      ",
+                "     :#=.  .:%* =@-.            ",
+                "      .:#%%%+:   ..+%%#.        ",
+                "        --..+#:  +@+.           ",
+                "      .+%:+%.-@++*..            ",
+                "     .*%: +%  .=*.              ",
+                "     +%-  @=                    ",
+                "     .+%-.@#                    ",
+                "       ...:@=                   ",
+                "          .@@=                  ",
+                "          :@+#                  ",
+                "         .@*:#                  ",
+                "        .#%.:#                  ",
+                "        +%..:#                  ",
+                "        =-..:=                  "
+            };
+            DrawingImage(startX, startY, drawAscii, Info);
+        }
+        public override Ally GetClone() { return new Oracle(); }
+    }
+
+
+
+
+
     class Magician : Ally, ISpecialAbility
     {
         public TimingCondition Timing { get; set;}
@@ -372,111 +527,5 @@ namespace RaidStrategy
 
         public override Ally GetClone() { return new Magician(); }
     }
-    class Scholar : Ally, ISpecialAbility
-    {
-        int HealPower;
-        public TimingCondition Timing { get; set;}
-        public string[] Description { get; set; }
-        public Scholar() : base("학자", 4, 8)
-        {
-            Description = new string[] {
-                "  매 턴 시작마다   ",
-                "맨 앞의 아군 체력을",
-                "  2 증가시킵니다.  "
-            };
-            Timing = TimingCondition.TurnStart;
-            HealPower = 2;
-        }
-        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
-        {
-            battleStatus.Allies[0].TakeHeal(HealPower);
-            GameManager.AddLogInQueue(new string[] {
-                    "특수　능력　발동!",
-                    "학자가　맨　앞　아군의　체력을　2　증가시킵니다."
-                }
-            );
-            
-        }
-        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
-        {
-            string[] drawAscii =
-            {
-                "         .:+**+-.               ",
-                "        :#+: .:*#-.             ",
-                "       .#-.     +*:             ",
-                "       .#=.     +*.             ",
-                "        :%*: .:+*:.             ",
-                "         .:-++-:.        .:--.  ",
-                "        .=..:%@@@%%#-..:%@@@@#: ",
-                "      .*@-..+#:::=%@@@%@+:::#=. ",
-                "    .*@=.  :@:       *@.   =*:  ",
-                "   .+*.    *%        @:   :#=.  ",
-                "    .+@=. .@        #%    =*:   ",
-                "      ... +%        %:   :#=    ",
-                "         .@.......:%@#@@@@#:    ",
-                "         +%:::=+#@@@@=.         ",
-                "         .:  ...                ",
-                "        :%#  .-%*..             ",
-                "      .=%=.    .+%=..           ",
-                "   .:+%#:.       .#=.           ",
-                " .=%*-.           =@:           "
-            };
-            DrawingImage(startX, startY, drawAscii, Info);
-        }
-        public override Ally GetClone() { return new Scholar(); }
-    }
-    class Oracle : Ally, ISpecialAbility
-    {
-        public TimingCondition Timing { get; set;}
-        public string[] Description { get; set; }
-        public Oracle() : base("점술사", 2, 8)
-        {
-            Description = new string[] {
-                "   아군이 쓰러지면  ",
-                "모든 아군의 공격력이",
-                "   2 배가 됩니다.   "
-            };
-            Timing = TimingCondition.AllyDown;
-        }
-        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
-        {
-            for (int i = 0; i < battleStatus.Allies.Count; i++) 
-            {
-                battleStatus.Allies[i].TakeBuff(battleStatus.Allies[i].StatusAttack);
-                GameManager.AddLogInQueue(new string[] {
-                        "특수　능력　발동!",
-                        "점술사가　모든　아군의　공격력을　2배로　증가시켰습니다."
-                    }
-                );
-                
-            }
-        }
-        public override void DrawAsciiArt(int startX, int startY, bool Info = true)
-        {
-            string[] drawAscii =
-            {
-                "                      =:  :==:. ",
-                "       .:==:.        :@%. .-+%: ",
-                "     .=#=--=*#:   -%@*-+%@*.=%: ",
-                "    .+*:    .-#: ::.#%++%- =*:. ",
-                "    .*+.    .-%-:#=.%#:=%*      ",
-                "     :#=.  .:%* =@-.            ",
-                "      .:#%%%+:   ..+%%#.        ",
-                "        --..+#:  +@+.           ",
-                "      .+%:+%.-@++*..            ",
-                "     .*%: +%  .=*.              ",
-                "     +%-  @=                    ",
-                "     .+%-.@#                    ",
-                "       ...:@=                   ",
-                "          .@@=                  ",
-                "          :@+#                  ",
-                "         .@*:#                  ",
-                "        .#%.:#                  ",
-                "        +%..:#                  ",
-                "        =-..:=                  "
-            };
-            DrawingImage(startX, startY, drawAscii, Info);
-        }
-        public override Ally GetClone() { return new Oracle(); }
-    }
+
 }

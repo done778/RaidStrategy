@@ -122,6 +122,9 @@ namespace RaidStrategy
                     // 죽는 애니메이션 출력
                     battleField.DrawDeathAlly(i);
 
+                    // 아군이 쓰러지는 조건인 특수 능력 발동
+                    TimingActionTrigger[(int)TimingCondition.AllyDown]?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, cloneDeck[i]));
+
                     // 죽은 아군의 특수 능력을 델리게이트에서 제거 해야함.
                     SkillEventDelete(currentAlly);
 
@@ -131,9 +134,6 @@ namespace RaidStrategy
                     {
                         return true;
                     }
-
-                    // 아군이 쓰러지는 조건인 특수 능력 발동
-                    TimingActionTrigger[(int)TimingCondition.AllyDown]?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
                 }
             }
             battleField.PanelUpdate(cloneDeck, currentEnemy);
