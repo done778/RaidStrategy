@@ -29,6 +29,15 @@ namespace RaidStrategy
                 Death();
             }
         }
+        public void TakeHeal(int heal)
+        {
+            StatusHealth += heal;
+        }
+
+        public void TakeBuff(int power)
+        {
+            StatusAttack += power;
+        }
 
         public string Attack(Character target)
         {

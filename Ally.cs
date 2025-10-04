@@ -159,9 +159,19 @@ namespace RaidStrategy
             };
             Timing = TimingCondition.TakenDamage;
         }
-        public void CastingSpecialAbility(Ally ally)
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
-            StatusAttack *= 2;
+            if (battleStatus.Target.Equals(this))
+            {
+                StatusAttack *= 2;
+                GameManager.ClearCommandPanel();
+                GameManager.DrawCenterCommandPanel(new string[] {
+                    "          특수 능력 발동!          ",
+                    "광전사의 공격력이 2배로 증가합니다."
+                }
+                );
+                Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+            }
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -205,9 +215,19 @@ namespace RaidStrategy
             };
             Timing = TimingCondition.TurnPreEnd;
         }
-        public void CastingSpecialAbility(Ally ally)
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
-            // 맨 앞에 있지 않으면 지원 공격을 함.
+            if(!battleStatus.Allies[0].Equals(this)) // 맨 앞이 본인이 아니라면
+            {
+                Attack(battleStatus.CurEnemy); // 적을 공격
+                GameManager.ClearCommandPanel();
+                GameManager.DrawCenterCommandPanel(new string[] {
+                    "       특수 능력 발동!        ",
+                    "궁사가 적에게 공격을 가합니다."
+                }
+                );
+                Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+            }
         }
 
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
@@ -250,9 +270,31 @@ namespace RaidStrategy
             };
             Timing = TimingCondition.AfterAttack;
         }
-        public void CastingSpecialAbility(Ally ally)
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
-            // 공격 후 자신 뒤에 있는 아군에게 1의 피해를 줌.
+            int index = 0; ; // 내 위치를 먼저 찾자.
+            for (int i = 0; battleStatus.Allies.Count > 0; i++) {
+                if(battleStatus.Allies[i].Equals(this))
+                {
+                    index = i; 
+                    break;
+                }
+            }
+            if (index + 1 >= battleStatus.Allies.Count) // 내가 맨 뒤에 있다면 효과 미발동.
+            {
+                return;
+            }
+            else
+            {
+                battleStatus.Allies[index + 1].TakeDamage(1);
+                GameManager.ClearCommandPanel();
+                GameManager.DrawCenterCommandPanel(new string[] {
+                    "             특수 능력 발동!             ",
+                    "격투가가 뒤의 아군에게 피해를 1 가합니다."
+                }
+                );
+                Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+            }
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -294,9 +336,16 @@ namespace RaidStrategy
             };
             Timing = TimingCondition.EnemyDown;
         }
-        public void CastingSpecialAbility(Ally ally)
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
             StatusAttack *= 3;
+            GameManager.ClearCommandPanel();
+            GameManager.DrawCenterCommandPanel(new string[] {
+                    "          특수 능력 발동!          ",
+                    "마법사의 공격력이 3배로 증가합니다."
+                }
+            );
+            Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -329,6 +378,7 @@ namespace RaidStrategy
     }
     class Scholar : Ally, ISpecialAbility
     {
+        int HealPower;
         public TimingCondition Timing { get; set;}
         public string[] Description { get; set; }
         public Scholar() : base("학자", 4, 8)
@@ -339,10 +389,18 @@ namespace RaidStrategy
                 "  2 증가시킵니다.  "
             };
             Timing = TimingCondition.TurnStart;
+            HealPower = 2;
         }
-        public void CastingSpecialAbility(Ally ally)
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
-            // 매 턴 맨 앞에 위치한 아군의 체력 +2
+            battleStatus.Allies[0].TakeHeal(HealPower);
+            GameManager.ClearCommandPanel();
+            GameManager.DrawCenterCommandPanel(new string[] {
+                    "               특수 능력 발동!              ",
+                    "학자가 맨 앞 아군의 체력을 2 증가시켰습니다."
+                }
+            );
+            Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {
@@ -385,9 +443,19 @@ namespace RaidStrategy
             };
             Timing = TimingCondition.AllyDown;
         }
-        public void CastingSpecialAbility(Ally ally)
+        public void CastingSpecialAbility(CurrentBattleStatus battleStatus)
         {
-            // 아군이 쓰러지면
+            for (int i = 0; i < battleStatus.Allies.Count; i++) 
+            {
+                battleStatus.Allies[i].TakeBuff(battleStatus.Allies[i].StatusAttack);
+                GameManager.ClearCommandPanel();
+                GameManager.DrawCenterCommandPanel(new string[] {
+                        "                  특수 능력 발동!                  ",
+                        "점술사가 모든 아군의 공격력을 2배로 증가시켰습니다."
+                    }
+                );
+                Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
+            }
         }
         public override void DrawAsciiArt(int startX, int startY, bool Info = true)
         {

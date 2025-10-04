@@ -18,12 +18,6 @@ namespace RaidStrategy
             cursorY = GameManager.HORIZON_AREA / 4;
             cursorX = (GameManager.BUFFER_SIZE_WIDTH / 3 * 2) + 3;
         }
-        
-        // 패널 아래 부분에 로그를 출력합니다.
-        public void ShowLog(string[] log)
-        {
-            GameManager.DrawCenterCommandPanel(log);
-        }
 
         // 패널 업데이트, 전장을 그리고, 현재 아군 캐릭터와, 적을 그립니다.
         public void PanelUpdate(List<Ally> allies, Enemy enemy, string[] log = null)
@@ -34,7 +28,8 @@ namespace RaidStrategy
             DrawEnemy(enemy);
             if (log != null) 
             {
-                ShowLog(log);
+                GameManager.ClearCommandPanel();
+                GameManager.DrawCenterCommandPanel(log);
             }
         }
 

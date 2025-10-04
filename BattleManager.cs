@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace RaidStrategy
 {
@@ -10,12 +11,12 @@ namespace RaidStrategy
     // BattleManager의 역할 : 실질적인 전투 로직을 담당
     class BattleManager
     {
-        public Action<Ally> OnTurnStart;
-        public Action<Ally> OnTurnPreEnd;
-        public Action<Ally> OnTakenDamage;
-        public Action<Ally> OnAfterAttack;
-        public Action<Ally> OnAllyDown;
-        public Action<Ally> OnEnemyDown;
+        public Action<CurrentBattleStatus> OnTurnStart;
+        public Action<CurrentBattleStatus> OnTurnPreEnd;
+        public Action<CurrentBattleStatus> OnTakenDamage;
+        public Action<CurrentBattleStatus> OnAfterAttack;
+        public Action<CurrentBattleStatus> OnAllyDown;
+        public Action<CurrentBattleStatus> OnEnemyDown;
 
         BattleField battleField; // UI 업데이트 담당
         Level level; // 적 관련 데이터
@@ -79,15 +80,25 @@ namespace RaidStrategy
             currentAlly = cloneDeck[0];
             currentEnemy = level.GetCurrentEnemy();
             // 턴 시작 알림! 예를 들어 학자가 있으면 맨 앞 아군 체력 증가 시킴.
-            OnTurnStart?.Invoke(null);
-            // 패널 업데이트. 로그는 어떻게 표시하지?
+            OnTurnStart?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
+            // 패널 업데이트.
             battleField.PanelUpdate(cloneDeck, currentEnemy);
 
             log = combatInteraction(currentAlly, currentEnemy); // 서로 일반 공격 주고 받음
             battleField.PanelUpdate(cloneDeck, currentEnemy, log);
+            Thread.Sleep(GameManager.BATTLE_INTERVAL_TIME);
 
+            // 공격 후와 피해를 받은 시점이 동시에 발동한다.
+            // 그럼 공격 후랑 피해 받는 시점을 왜 굳이 나눴느냐?
+            // 특수 능력 중엔 아군에게 피해를 주는 효과가 있는데 이 땐 OnTakenDamage 이벤트만 발생해야한다.
+            OnAfterAttack?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, currentAlly));
+            battleField.PanelUpdate(cloneDeck, currentEnemy);
+
+            OnTakenDamage?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, currentAlly));
+            battleField.PanelUpdate(cloneDeck, currentEnemy);
             // 턴 종료 알림!
-            OnTurnPreEnd?.Invoke(null);
+            OnTurnPreEnd?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
+            battleField.PanelUpdate(cloneDeck, currentEnemy);
 
             // 현재 턴 종료와 다음 턴 시작 사이에 죽은 애 체크 & 처리를 해야함.
             if (currentEnemy.IsAlive == false)
@@ -99,7 +110,7 @@ namespace RaidStrategy
                     return true;
                 }
                 // 적이 쓰러지는 조건인 특수 능력 발동
-                OnEnemyDown?.Invoke(null);
+                OnEnemyDown?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
             }
             // 리스트 요소 삭제로 인덱스가 꼬일 수 있으므로 뒤에서 부터 체크
             for (int i = cloneDeck.Count - 1; i >= 0; i--) 
@@ -117,27 +128,22 @@ namespace RaidStrategy
                     cloneDeck.RemoveAt(i);
                     
                     // 아군이 쓰러지는 조건인 특수 능력 발동
-                    OnAllyDown?.Invoke(null);
+                    OnAllyDown?.Invoke(new CurrentBattleStatus(cloneDeck, currentEnemy, null));
                 }
             }
-            
+            battleField.PanelUpdate(cloneDeck, currentEnemy);
+
             return false;
         }
 
         // 아군과 적 서로 일반 공격 주고 받기
         private string[] combatInteraction(Ally ally, Enemy enemy)
-        {
+        {   
+            // 공격의 한 단위는 동시에 서로의 체력이 깎인다.  
             string[] log = {
                 ally.Attack(enemy),
                 enemy.Attack(ally)
             };
-            // 공격의 한 단위는 동시에 서로의 체력이 깎인다.
-
-            // 공격 후와 피해를 받은 시점이 동시에 발동한다.
-            // 그럼 공격 후랑 피해 받는 시점을 왜 굳이 나눴느냐?
-            // 특수 능력 중엔 아군에게 피해를 주는 효과가 있는데 이 땐 OnTakenDamage 이벤트만 발생해야한다.
-            OnAfterAttack?.Invoke(ally);
-            OnTakenDamage?.Invoke(ally);
             return log;
         }
 
@@ -213,6 +219,22 @@ namespace RaidStrategy
                         break;
                 }
             }
+        }
+    }
+
+    // 특수 능력 중 다른 객체와 상호작용이 필요한 경우가 있음.
+    // 그래서 이벤트가 발생하면 현재 전장 상황을 만들어 전달함.
+    // 각 특수 능력 메서드는 필요한 정보만 사용하도록 함.
+    class CurrentBattleStatus
+    {
+        public List<Ally> Allies { get; private set; }
+        public Enemy CurEnemy { get; private set; }
+        public Character Target { get; private set; }
+        public CurrentBattleStatus(List<Ally> allies, Enemy enemy, Character target)
+        {
+            Allies = allies;
+            CurEnemy = enemy;
+            Target = target;
         }
     }
 }
